@@ -285,9 +285,47 @@
                 padding: 10px;
             }
         }
+
+        #loginPage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--background-color);
+            z-index: 1000;
+        }
+
+        #loginForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 300px;
+        }
+
+        #loginForm input, #loginForm button {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
+    <div id="loginPage" class="container">
+        <h2>Accesso</h2>
+        <form id="loginForm">
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Accedi</button>
+        </form>
+    </div>
+
     <div class="sidebar">
         <h1>Gestione Interventi</h1>
         <div class="nav-buttons">
@@ -415,7 +453,7 @@
             <canvas id="areaFirma"></canvas>
             <br>
             <button id="pulisciFirma">Pulisci firma</button>
-            <button id="confermaFirma">Conferma firma</button>
+<button id="confermaFirma">Conferma firma</button>
         </div>
     </div>
 
@@ -435,7 +473,7 @@
         const interventoForm = document.getElementById('interventoForm');
         const listaClienti = document.getElementById('listaClienti');
         const tabellaClienti = document.getElementById('tabellaClienti').getElementsByTagName('tbody')[0];
-const formAppuntamento = document.getElementById('formAppuntamento');
+        const formAppuntamento = document.getElementById('formAppuntamento');
         const modalFirma = document.getElementById('modalFirma');
         const areaFirma = document.getElementById('areaFirma');
         const ctx = areaFirma.getContext('2d');
@@ -459,7 +497,7 @@ const formAppuntamento = document.getElementById('formAppuntamento');
 
         // Funzioni di utilità
         function formatDataItaliana(data) {
-            return data.toLocaleDateString('it-IT');
+            return data.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.');
         }
 
         function formatOraItaliana(data) {
@@ -663,9 +701,10 @@ const formAppuntamento = document.getElementById('formAppuntamento');
             const dataInput = document.getElementById('dataAppuntamento').value;
             const oraInput = document.getElementById('oraAppuntamento').value;
             
-            const data = new Date(dataInput + 'T' + oraInput);
+            const [anno, mese, giorno] = dataInput.split('-');
+            const data = new Date(anno, mese - 1, giorno);
             const dataFormattata = formatDataItaliana(data);
-            const oraFormattata = formatOraItaliana(data);
+            const oraFormattata = oraInput.substring(0, 5);
 
             const appuntamento = `${dataFormattata} ${oraFormattata}`;
             
@@ -729,7 +768,7 @@ const formAppuntamento = document.getElementById('formAppuntamento');
             
             const rect = areaFirma.getBoundingClientRect();
             const x = (e.clientX || e.touches[0].clientX) - rect.left;
-            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+const y = (e.clientY || e.touches[0].clientY) - rect.top;
 
             ctx.lineTo(x, y);
             ctx.stroke();
@@ -752,14 +791,14 @@ const formAppuntamento = document.getElementById('formAppuntamento');
             newRow.insertCell().innerHTML = `
                 <div class="azioni-intervento">
                     <button onclick="visualizzaPDF('')">Stampa PDF</button>
-                    <button onclick="eliminaIntervento(this)"><i class="fas fa-trash-alt"></i></button>
+					<button onclick="eliminaIntervento(this)"><i class="fas fa-trash-alt"></i></button>
                 </div>
             `;
 
             clienteSelezionato.remove();
             modalFirma.style.display = 'none';
             salvaDati();
-			showToast("Intervento completato e spostato in Interventi Completati");
+            showToast("Intervento completato e spostato in Interventi Completati");
             generaCalendario();
             aggiornaProssimiEventi();
         });
@@ -850,7 +889,8 @@ const formAppuntamento = document.getElementById('formAppuntamento');
 
         function getAppuntamentiGiorno(data) {
             return Array.from(tabellaInterventiInCorso.rows).filter(row => {
-                const dataAppuntamento = new Date(row.cells[5].textContent.split(' ')[0].split('.').reverse().join('-'));
+                const [giorno, mese, anno] = row.cells[5].textContent.split(' ')[0].split('.');
+                const dataAppuntamento = new Date(anno, mese - 1, giorno);
                 return dataAppuntamento.toDateString() === data.toDateString();
             }).map(row => ({
                 nome: row.cells[0].textContent,
@@ -865,13 +905,17 @@ const formAppuntamento = document.getElementById('formAppuntamento');
             const tra30Giorni = new Date(oggi.getTime() + 30 * 24 * 60 * 60 * 1000);
 
             const appuntamenti = Array.from(tabellaInterventiInCorso.rows)
-                .map(row => ({
-                    nome: row.cells[0].textContent,
-                    cognome: row.cells[1].textContent,
-                    tipoIntervento: row.cells[4].textContent,
-                    data: new Date(row.cells[5].textContent.split(' ')[0].split('.').reverse().join('-')),
-                    ora: row.cells[5].textContent.split(' ')[1]
-                }))
+                .map(row => {
+                    const [giorno, mese, anno] = row.cells[5].textContent.split(' ')[0].split('.');
+                    const ora = row.cells[5].textContent.split(' ')[1];
+                    return {
+                        nome: row.cells[0].textContent,
+                        cognome: row.cells[1].textContent,
+                        tipoIntervento: row.cells[4].textContent,
+                        data: new Date(anno, mese - 1, giorno),
+                        ora: ora
+                    };
+                })
                 .filter(a => a.data >= oggi && a.data <= tra30Giorni)
                 .sort((a, b) => a.data - b.data);
 
@@ -909,10 +953,42 @@ const formAppuntamento = document.getElementById('formAppuntamento');
             // I dati sono già caricati in caricaDati()
         }
 
-        // Inizializzazione
-        document.addEventListener('DOMContentLoaded', () => {
-            caricaDati();
-            btnNuovoCliente.click(); // Apre la scheda "Nuovo cliente" di default
+        // Gestione del login
+        const loginPage = document.getElementById('loginPage');
+        const loginForm = document.getElementById('loginForm');
+        const mainContent = document.querySelector('.main-content');
+        const sidebar = document.querySelector('.sidebar');
+
+        // Funzione per nascondere tutti gli elementi principali
+        function nascondiElementiPrincipali() {
+            mainContent.classList.add('hidden');
+            sidebar.classList.add('hidden');
+        }
+
+        // Funzione per mostrare tutti gli elementi principali
+        function mostraElementiPrincipali() {
+            mainContent.classList.remove('hidden');
+            sidebar.classList.remove('hidden');
+        }
+
+        // Nascondi gli elementi principali all'avvio
+        nascondiElementiPrincipali();
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+
+            // Qui dovresti implementare una vera autenticazione.
+            // Per questo esempio, usiamo una password hardcoded.
+            if (password === 'password') {
+                loginPage.classList.add('hidden');
+                mostraElementiPrincipali();
+                showToast('Accesso effettuato con successo!');
+                caricaDati(); // Carica i dati dopo il login
+                btnNuovoCliente.click(); // Apre la scheda "Nuovo cliente" di default
+            } else {
+                showToast('Password non valida. Riprova.');
+            }
         });
 
         // Gestione del ridimensionamento della finestra

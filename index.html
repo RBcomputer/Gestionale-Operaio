@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gestione Interventi</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -288,21 +288,6 @@ YUBGRGww">
             font-size: 0.7em;
         }
 
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: static;
-            }
-            .main-content {
-                margin-left: 0;
-                padding: 10px;
-            }
-        }
-
         .login-container {
             display: flex;
             justify-content: center;
@@ -420,6 +405,126 @@ YUBGRGww">
         .btn-pdf { background-color: #9b59b6; }
         .btn-elimina { background-color: #e74c3c; }
         .btn-ripristina { background-color: #1abc9c; }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .nav-buttons {
+                flex-direction: row;
+                padding: 10px 0;
+            }
+            
+            .nav-buttons button {
+                padding: 8px 12px;
+                margin-right: 10px;
+                margin-bottom: 0;
+                font-size: 0.9em;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+            }
+            
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+            
+            td:before {
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                content: attr(data-label);
+                font-weight: bold;
+            }
+            
+            .azioni-intervento {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .azioni-intervento button {
+                margin: 5px;
+                flex: 1 0 auto;
+            }
+            
+            #calendarioContainer {
+                grid-template-columns: repeat(1, 1fr);
+            }
+            
+            .giorno-calendario {
+                min-height: auto;
+            }
+
+            button {
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+            
+            .azioni-intervento button {
+                margin: 5px;
+				min-width: 120px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+
+            #calendarioContainer {
+                grid-template-columns: repeat(7, 1fr);
+            }
+            
+            .giorno-calendario {
+                padding: 2px;
+                font-size: 0.7em;
+                min-height: 40px;
+            }
+            
+            .evento-calendario {
+                font-size: 0.6em;
+            }
+
+            .login-box {
+                width: 90%;
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -715,19 +820,7 @@ YUBGRGww">
             changeActiveButton(btnRubrica);
             nuovoClienteForm.style.display = 'none';
             listaClienti.style.display = 'none';
-            interventiCompletati.style.display = 'none';
-            interventiInCorso.style.display = 'none';
-            rubrica.style.display = 'block';
-            calendario.style.display = 'none';
-            cestino.style.display = 'none';
-            aggiornaRubrica();
-        });
-
-        btnCalendario.addEventListener('click', () => {
-            changeActiveButton(btnCalendario);
-            nuovoClienteForm.style.display = 'none';
-            listaClienti.style.display = 'none';
-            interventiCompletati.style.display = 'none';
+interventiCompletati.style.display = 'none';
             interventiInCorso.style.display = 'none';
             rubrica.style.display = 'none';
             calendario.style.display = 'block';
@@ -771,7 +864,8 @@ YUBGRGww">
                     indirizzo: row.cells[2].textContent,
                     telefono: row.cells[3].textContent,
                     tipoIntervento: row.cells[4].textContent,
-                    appuntamento: row.cells[5].textContent})),
+                    appuntamento: row.cells[5].textContent
+                })),
                 cestino: Array.from(tabellaCestino.rows).map(row => ({
                     nome: row.cells[0].textContent,
                     cognome: row.cells[1].textContent,
@@ -819,13 +913,13 @@ YUBGRGww">
         function aggiungiRigaTabella(tabella, intervento, tipo) {
             const newRow = tabella.insertRow();
             newRow.innerHTML = `
-                <td>${intervento.nome}</td>
-                <td>${intervento.cognome}</td>
-                <td>${intervento.indirizzo}</td>
-                <td>${intervento.telefono}</td>
-                <td>${intervento.tipoIntervento}</td>
-                ${tipo !== 'daPianificare' ? `<td>${intervento.appuntamento || ''}</td>` : ''}
-                <td>
+                <td data-label="Nome">${intervento.nome}</td>
+                <td data-label="Cognome">${intervento.cognome}</td>
+                <td data-label="Indirizzo">${intervento.indirizzo}</td>
+                <td data-label="Telefono">${intervento.telefono}</td>
+                <td data-label="Tipo Intervento">${intervento.tipoIntervento}</td>
+                ${tipo !== 'daPianificare' ? `<td data-label="Appuntamento">${intervento.appuntamento || ''}</td>` : ''}
+                <td data-label="Azioni">
                     <div class="azioni-intervento">
                         ${tipo === 'daPianificare' ? '<button onclick="modificaIntervento(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i> Modifica</button>' : ''}
                         ${tipo === 'daPianificare' ? '<button onclick="pianificaAppuntamento(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i> Pianifica</button>' : ''}
@@ -842,11 +936,11 @@ YUBGRGww">
         function aggiungiRigaRubrica(contatto) {
             const newRow = tabellaRubrica.insertRow();
             newRow.innerHTML = `
-                <td>${contatto.nome}</td>
-                <td>${contatto.cognome}</td>
-                <td>${contatto.indirizzo}</td>
-                <td>${contatto.telefono}</td>
-                <td>
+                <td data-label="Nome">${contatto.nome}</td>
+                <td data-label="Cognome">${contatto.cognome}</td>
+                <td data-label="Indirizzo">${contatto.indirizzo}</td>
+                <td data-label="Telefono">${contatto.telefono}</td>
+                <td data-label="Azioni">
                     <div class="azioni-intervento">
                         <button onclick="modificaContatto(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i> Modifica</button>
                         <button onclick="pianificaInterventoRubrica(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i> Pianifica</button>
@@ -1060,7 +1154,7 @@ YUBGRGww">
             if (intervento.appuntamento) {
                 aggiungiRigaTabella(tabellaInterventiInCorso, intervento, 'inCorso');
             } else {
-aggiungiRigaTabella(tabellaClienti, intervento, 'daPianificare');
+                aggiungiRigaTabella(tabellaClienti, intervento, 'daPianificare');
             }
             
             row.remove();
@@ -1351,15 +1445,7 @@ aggiungiRigaTabella(tabellaClienti, intervento, 'daPianificare');
             }
 
             // Ripristina i pulsanti originali
-            ripristinaPulsantiOriginali(row, 'rubrica');
-
-            salvaDati();
-            showToast('Modifiche al contatto salvate con successo');
-        }
-
-        function annullaModificheContatto(button) {
-            const row = button.closest('tr');
-            ripristinaPulsantiOriginali(row, 'rubrica');
+ripristinaPulsantiOriginali(row, 'rubrica');
         }
 
         function ripristinaPulsantiOriginali(row, tipo) {

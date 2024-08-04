@@ -8,6 +8,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC3klEQVRYR8WXS2hTQRSG/0lqW2ox
+ahCF4kLFhYioiy6KCxFR6aJuBBFcKFoQxCiIogtdKD5AED
+tQVHSni7ern0QEXRAV8YGgFBEUpHmYmKSx+cW5zElu7txMYhe5q8w9Z/75z5kzZ84VCq5SqYTW1tYuEdmuqhER6VHRX1R9q6qTIjKmqu+EsZShBOEiWZMHEbnHjg9U9SkF3GKMHjuBXfTfZMg
+5EZkWkXeEfC83iIlmj4icVtU9FHMqJ+68qj5S1T
+eq+klE5kRktYhsVNXtItLn8J1W1Zuqeo2CDjsB+1X1cii7iPSr6h1P8z1VPR+
+YUBGRGww">
     <style>
         :root {
             --primary-color: #3498db;
@@ -106,6 +112,11 @@
             font-size: 1em;
         }
 
+        textarea#tipoIntervento {
+            min-height: 100px;
+            resize: vertical;
+        }
+
         button {
             background-color: var(--primary-color);
             color: white;
@@ -123,19 +134,21 @@
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-top: 20px;
         }
 
         th, td {
             text-align: left;
             padding: 12px;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #ddd;
         }
 
         th {
             background-color: var(--primary-color);
             color: white;
+            border-bottom: 2px solid #3498db;
         }
 
         .modal {
@@ -158,6 +171,8 @@
             width: 80%;
             max-width: 500px;
             border-radius: 8px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         #areaFirma {
@@ -165,6 +180,8 @@
             width: 100%;
             max-width: 300px;
             height: 150px;
+            display: block;
+            margin: 20px auto;
         }
 
         .stato-appuntamento {
@@ -286,55 +303,153 @@
             }
         }
 
-        #loginPage {
+        .login-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
             width: 100vw;
             position: fixed;
             top: 0;
             left: 0;
-            background-color: var(--background-color);
+            background-color: #f0f2f5;
             z-index: 1000;
         }
 
-        #loginForm {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 300px;
+        .login-box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
         }
 
-        #loginForm input, #loginForm button {
-            margin-bottom: 10px;
+        .login-header {
+            margin-bottom: 30px;
+        }
+
+        .login-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .login-welcome {
+            color: var(--text-color);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .input-group input {
+            padding-left: 35px;
+        }
+
+        .login-button {
             width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover {
+            background-color: var(--secondary-color);
         }
 
         .hidden {
             display: none !important;
         }
+
+        .notifica-counter {
+            display: inline-block;
+            background-color: var(--highlight-color);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+
+        .azioni-intervento {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .azioni-intervento button {
+            padding: 8px 12px;
+            font-size: 0.9em;
+            margin: 2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .azioni-intervento button i {
+            font-size: 1em;
+            margin-right: 4px;
+        }
+
+        .btn-modifica, .btn-pianifica, .btn-firma, .btn-pdf, .btn-elimina, .btn-ripristina {
+            min-width: auto;
+        }
+
+        .btn-modifica { background-color: #3498db; }
+        .btn-pianifica { background-color: #2ecc71; }
+        .btn-firma { background-color: #f39c12; }
+        .btn-pdf { background-color: #9b59b6; }
+        .btn-elimina { background-color: #e74c3c; }
+        .btn-ripristina { background-color: #1abc9c; }
     </style>
 </head>
 <body>
-    <div id="loginPage" class="container">
-        <h2>Accesso</h2>
-        <form id="loginForm">
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Accedi</button>
-        </form>
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <i class="fas fa-tools login-icon"></i>
+                <h2>Gestione Interventi</h2>
+            </div>
+            <p class="login-welcome">Benvenuto! Inserisci la password per accedere.</p>
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="login-button">Accedi</button>
+            </form>
+        </div>
     </div>
 
     <div class="sidebar">
         <h1>Gestione Interventi</h1>
         <div class="nav-buttons">
             <button id="btnNuovoCliente"><i class="fas fa-user-plus"></i> Nuovo Cliente</button>
-            <button id="btnInterventi"><i class="fas fa-calendar-plus" style="color: #e74c3c;"></i> Da pianificare</button>
-            <button id="btnInterventiInCorso"><i class="fas fa-hard-hat" style="color: #f39c12;"></i> In corso</button>
-            <button id="btnInterventiCompletati"><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Completati</button>
+            <button id="btnInterventi"><i class="fas fa-calendar-plus" style="color: #e74c3c;"></i> Da pianificare <span class="notifica-counter" id="interventiCounter">0</span></button>
+            <button id="btnInterventiInCorso"><i class="fas fa-hard-hat" style="color: #f39c12;"></i> In corso <span class="notifica-counter" id="interventiInCorsoCounter">0</span></button>
+            <button id="btnInterventiCompletati"><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Completati <span class="notifica-counter" id="interventiCompletatiCounter">0</span></button>
             <button id="btnRubrica"><i class="fas fa-address-book"></i> Rubrica</button>
             <button id="btnCalendario"><i class="fas fa-calendar-alt"></i> Calendario</button>
+            <button id="btnCestino"><i class="fas fa-trash"></i> Cestino <span class="notifica-counter" id="cestinoCounter">0</span></button>
         </div>
     </div>
 
@@ -432,6 +547,25 @@
                 <ul></ul>
             </div>
         </div>
+
+        <div class="container" id="cestino" style="display: none;">
+            <h2>Cestino</h2>
+            <button id="svuotaCestino">Svuota cestino</button>
+            <table id="tabellaCestino">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>Indirizzo</th>
+                        <th>Telefono</th>
+                        <th>Tipo Intervento</th>
+                        <th>Appuntamento</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
     <div id="modalAppuntamento" class="modal">
@@ -448,12 +582,13 @@
     <div id="modalFirma" class="modal">
         <div class="modal-content">
             <h2>Conferma Completamento Lavoro</h2>
-            <p>Il sottoscritto cliente conferma che in data odierna, <span id="dataOdierna"></span>, l'intervento richiesto è stato eseguito con successo.</p>
+            <p>Il sottoscritto cliente conferma che in data odierna, <span id="dataOdierna"></span>, l'intervento richiesto è stato eseguito con successo e in maniera ottimale.</p>
             <p>Firma del cliente:</p>
             <canvas id="areaFirma"></canvas>
+            <p id="dataOraFirma"></p>
             <br>
             <button id="pulisciFirma">Pulisci firma</button>
-<button id="confermaFirma">Conferma firma</button>
+            <button id="confermaFirma">Conferma firma</button>
         </div>
     </div>
 
@@ -469,6 +604,7 @@
         const btnInterventiCompletati = document.getElementById('btnInterventiCompletati');
         const btnRubrica = document.getElementById('btnRubrica');
         const btnCalendario = document.getElementById('btnCalendario');
+        const btnCestino = document.getElementById('btnCestino');
         const nuovoClienteForm = document.getElementById('nuovoClienteForm');
         const interventoForm = document.getElementById('interventoForm');
         const listaClienti = document.getElementById('listaClienti');
@@ -490,6 +626,9 @@
         const mesePrecedente = document.getElementById('mesePrecedente');
         const meseSuccessivo = document.getElementById('meseSuccessivo');
         const prossimiEventi = document.getElementById('prossimiEventi').getElementsByTagName('ul')[0];
+        const cestino = document.getElementById('cestino');
+        const tabellaCestino = document.getElementById('tabellaCestino').getElementsByTagName('tbody')[0];
+        const svuotaCestino = document.getElementById('svuotaCestino');
 
         let clienteSelezionato = null;
         let isDrawing = false;
@@ -516,6 +655,14 @@
             button.classList.add('active');
         }
 
+        // Funzione per aggiornare i contatori
+        function aggiornaContatori() {
+            document.getElementById('interventiCounter').textContent = tabellaClienti.rows.length;
+            document.getElementById('interventiInCorsoCounter').textContent = tabellaInterventiInCorso.rows.length;
+            document.getElementById('interventiCompletatiCounter').textContent = tabellaInterventiCompletati.rows.length;
+            document.getElementById('cestinoCounter').textContent = tabellaCestino.rows.length;
+        }
+
         // Event Listeners per i pulsanti della sidebar
         btnNuovoCliente.addEventListener('click', () => {
             changeActiveButton(btnNuovoCliente);
@@ -525,6 +672,7 @@
             interventiInCorso.style.display = 'none';
             rubrica.style.display = 'none';
             calendario.style.display = 'none';
+            cestino.style.display = 'none';
         });
 
         btnInterventi.addEventListener('click', () => {
@@ -535,6 +683,7 @@
             interventiInCorso.style.display = 'none';
             rubrica.style.display = 'none';
             calendario.style.display = 'none';
+            cestino.style.display = 'none';
             aggiornaListaClientiDaPianificare();
         });
 
@@ -546,6 +695,7 @@
             interventiInCorso.style.display = 'block';
             rubrica.style.display = 'none';
             calendario.style.display = 'none';
+            cestino.style.display = 'none';
             aggiornaInterventiInCorso();
         });
 
@@ -557,6 +707,7 @@
             interventiInCorso.style.display = 'none';
             rubrica.style.display = 'none';
             calendario.style.display = 'none';
+            cestino.style.display = 'none';
             aggiornaInterventiCompletati();
         });
 
@@ -568,6 +719,7 @@
             interventiInCorso.style.display = 'none';
             rubrica.style.display = 'block';
             calendario.style.display = 'none';
+            cestino.style.display = 'none';
             aggiornaRubrica();
         });
 
@@ -579,8 +731,20 @@
             interventiInCorso.style.display = 'none';
             rubrica.style.display = 'none';
             calendario.style.display = 'block';
+            cestino.style.display = 'none';
             generaCalendario();
             aggiornaProssimiEventi();
+        });
+
+        btnCestino.addEventListener('click', () => {
+            changeActiveButton(btnCestino);
+            nuovoClienteForm.style.display = 'none';
+            listaClienti.style.display = 'none';
+            interventiCompletati.style.display = 'none';
+            interventiInCorso.style.display = 'none';
+            rubrica.style.display = 'none';
+            calendario.style.display = 'none';
+            cestino.style.display = 'block';
         });
 
         // Funzioni per la gestione dei dati
@@ -607,6 +771,13 @@
                     indirizzo: row.cells[2].textContent,
                     telefono: row.cells[3].textContent,
                     tipoIntervento: row.cells[4].textContent,
+                    appuntamento: row.cells[5].textContent})),
+                cestino: Array.from(tabellaCestino.rows).map(row => ({
+                    nome: row.cells[0].textContent,
+                    cognome: row.cells[1].textContent,
+                    indirizzo: row.cells[2].textContent,
+                    telefono: row.cells[3].textContent,
+                    tipoIntervento: row.cells[4].textContent,
                     appuntamento: row.cells[5].textContent
                 }))
             };
@@ -619,10 +790,12 @@
                 telefono: row.cells[3].textContent
             }));
             localStorage.setItem('rubrica', JSON.stringify(contatti));
+            
+            aggiornaContatori();
         }
 
         function caricaDati() {
-            const interventi = JSON.parse(localStorage.getItem('interventi')) || { daPianificare: [], inCorso: [], completati: [] };
+            const interventi = JSON.parse(localStorage.getItem('interventi')) || { daPianificare: [], inCorso: [], completati: [], cestino: [] };
             
             tabellaClienti.innerHTML = '';
             interventi.daPianificare.forEach(intervento => aggiungiRigaTabella(tabellaClienti, intervento, 'daPianificare'));
@@ -633,9 +806,14 @@
             tabellaInterventiCompletati.innerHTML = '';
             interventi.completati.forEach(intervento => aggiungiRigaTabella(tabellaInterventiCompletati, intervento, 'completati'));
 
+            tabellaCestino.innerHTML = '';
+            interventi.cestino.forEach(intervento => aggiungiRigaTabella(tabellaCestino, intervento, 'cestino'));
+
             const contatti = JSON.parse(localStorage.getItem('rubrica')) || [];
             tabellaRubrica.innerHTML = '';
             contatti.forEach(contatto => aggiungiRigaRubrica(contatto));
+
+            aggiornaContatori();
         }
 
         function aggiungiRigaTabella(tabella, intervento, tipo) {
@@ -646,13 +824,16 @@
                 <td>${intervento.indirizzo}</td>
                 <td>${intervento.telefono}</td>
                 <td>${intervento.tipoIntervento}</td>
-                ${tipo !== 'daPianificare' ? `<td>${intervento.appuntamento}</td>` : ''}
+                ${tipo !== 'daPianificare' ? `<td>${intervento.appuntamento || ''}</td>` : ''}
                 <td>
                     <div class="azioni-intervento">
-                        ${tipo === 'daPianificare' ? '<button onclick="pianificaAppuntamento(this)">Pianifica Appuntamento</button>' : ''}
-                        ${tipo === 'inCorso' ? '<button onclick="apriModalFirma(this)">Firma Cliente</button>' : ''}
-                        ${tipo === 'completati' ? '<button onclick="visualizzaPDF(\'\')">Stampa PDF</button>' : ''}
-                        <button onclick="eliminaIntervento(this)"><i class="fas fa-trash-alt"></i></button>
+                        ${tipo === 'daPianificare' ? '<button onclick="modificaIntervento(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i> Modifica</button>' : ''}
+                        ${tipo === 'daPianificare' ? '<button onclick="pianificaAppuntamento(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i> Pianifica</button>' : ''}
+                        ${tipo === 'inCorso' ? '<button onclick="apriModalFirma(this)" class="btn-firma"><i class="fas fa-signature"></i> Firma</button>' : ''}
+                        ${tipo === 'completati' ? '<button onclick="visualizzaPDF(this)" class="btn-pdf"><i class="fas fa-file-pdf"></i> PDF</button>' : ''}
+                        ${tipo === 'cestino' ? '<button onclick="ripristinaIntervento(this)" class="btn-ripristina"><i class="fas fa-undo"></i> Ripristina</button>' : ''}
+                        ${tipo !== 'cestino' ? '<button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i> Elimina</button>' : ''}
+                        ${tipo === 'cestino' ? '<button onclick="eliminaDefinitivamente(this)" class="btn-elimina"><i class="fas fa-trash"></i> Elimina</button>' : ''}
                     </div>
                 </td>
             `;
@@ -666,8 +847,11 @@
                 <td>${contatto.indirizzo}</td>
                 <td>${contatto.telefono}</td>
                 <td>
-                    <button onclick="pianificaInterventoRubrica(this)">Pianifica Intervento</button>
-                    <button onclick="eliminaContattoRubrica(this)"><i class="fas fa-trash-alt"></i></button>
+                    <div class="azioni-intervento">
+                        <button onclick="modificaContatto(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i> Modifica</button>
+                        <button onclick="pianificaInterventoRubrica(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i> Pianifica</button>
+                        <button onclick="eliminaContattoRubrica(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i> Elimina</button>
+                    </div>
                 </td>
             `;
         }
@@ -715,8 +899,8 @@
             newRow.insertCell().textContent = appuntamento;
             newRow.insertCell().innerHTML = `
                 <div class="azioni-intervento">
-                    <button onclick="apriModalFirma(this)">Firma Cliente</button>
-                    <button onclick="eliminaIntervento(this)"><i class="fas fa-trash-alt"></i></button>
+                    <button onclick="apriModalFirma(this)" class="btn-firma"><i class="fas fa-signature"></i> Firma</button>
+                    <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i> Elimina</button>
                 </div>
             `;
 
@@ -735,6 +919,7 @@
             clienteSelezionato = button.closest('tr');
             modalFirma.style.display = 'block';
             document.getElementById('dataOdierna').textContent = formatDataItaliana(new Date());
+            document.getElementById('dataOraFirma').textContent = `Data e ora: ${formatDataItaliana(new Date())} ${formatOraItaliana(new Date())}`;
             inizializzaAreaFirma();
         }
 
@@ -768,7 +953,7 @@
             
             const rect = areaFirma.getBoundingClientRect();
             const x = (e.clientX || e.touches[0].clientX) - rect.left;
-const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
 
             ctx.lineTo(x, y);
             ctx.stroke();
@@ -790,8 +975,8 @@ const y = (e.clientY || e.touches[0].clientY) - rect.top;
             }
             newRow.insertCell().innerHTML = `
                 <div class="azioni-intervento">
-                    <button onclick="visualizzaPDF('')">Stampa PDF</button>
-					<button onclick="eliminaIntervento(this)"><i class="fas fa-trash-alt"></i></button>
+                    <button onclick="visualizzaPDF(this)" class="btn-pdf"><i class="fas fa-file-pdf"></i> PDF</button>
+                    <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i> Elimina</button>
                 </div>
             `;
 
@@ -804,21 +989,100 @@ const y = (e.clientY || e.touches[0].clientY) - rect.top;
         });
 
         // Funzioni per la gestione dei PDF
-        function visualizzaPDF(pdfUrl) {
-            // Implementare la logica per visualizzare o scaricare il PDF
-            showToast("Funzionalità di stampa PDF non ancora implementata");
+        function visualizzaPDF(button) {
+            const row = button.closest('tr');
+            const intervento = {
+                nome: row.cells[0].textContent,
+                cognome: row.cells[1].textContent,
+                indirizzo: row.cells[2].textContent,
+                telefono: row.cells[3].textContent,
+                tipoIntervento: row.cells[4].textContent,
+                appuntamento: row.cells[5].textContent
+            };
+
+            const doc = new jsPDF();
+            doc.setFontSize(18);
+            doc.text('Rapporto Intervento', 105, 20, null, null, 'center');
+            doc.setFontSize(12);
+            doc.text(`Nome: ${intervento.nome}`, 20, 40);
+            doc.text(`Cognome: ${intervento.cognome}`, 20, 50);
+            doc.text(`Indirizzo: ${intervento.indirizzo}`, 20, 60);
+            doc.text(`Telefono: ${intervento.telefono}`, 20, 70);
+            doc.text(`Tipo Intervento: ${intervento.tipoIntervento}`, 20, 80);
+            doc.text(`Data e Ora Appuntamento: ${intervento.appuntamento}`, 20, 90);
+
+            // Aggiungi il testo di conferma con a capo automatico
+            const confermaText = `Il sottoscritto cliente conferma che in data ${formatDataItaliana(new Date())}, l'intervento richiesto è stato eseguito con successo e in maniera ottimale. L'intervento è stato completato secondo gli standard concordati e il cliente si dichiara pienamente soddisfatto del lavoro svolto. Questa firma costituisce accettazione e approvazione del servizio fornito.`;
+            const splitText = doc.splitTextToSize(confermaText, 170);
+            doc.text(splitText, 20, 110);
+
+            doc.addImage(areaFirma.toDataURL(), 'PNG', 20, 130, 50, 25);
+            doc.text(`Data e ora firma: ${formatDataItaliana(new Date())} ${formatOraItaliana(new Date())}`, 20, 160);
+
+            // Apri il PDF in una nuova finestra del browser
+            const pdfDataUri = doc.output('datauristring');
+            const newWindow = window.open();
+            newWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`);
         }
 
         // Funzione per eliminare un intervento
         function eliminaIntervento(button) {
-            if (confirm('Sei sicuro di voler eliminare questo intervento?')) {
-                button.closest('tr').remove();
+            if (confirm('Sei sicuro di voler spostare questo intervento nel cestino?')) {
+                const row = button.closest('tr');
+                const intervento = {
+                    nome: row.cells[0].textContent,
+                    cognome: row.cells[1].textContent,
+                    indirizzo: row.cells[2].textContent,
+                    telefono: row.cells[3].textContent,
+                    tipoIntervento: row.cells[4].textContent,
+                    appuntamento: row.cells[5] ? row.cells[5].textContent : ''
+                };
+                aggiungiRigaTabella(tabellaCestino, intervento, 'cestino');
+                row.remove();
                 salvaDati();
-                showToast('Intervento eliminato con successo');
+                showToast('Intervento spostato nel cestino');
                 generaCalendario();
                 aggiornaProssimiEventi();
             }
         }
+
+        function ripristinaIntervento(button) {
+            const row = button.closest('tr');
+            const intervento = {
+                nome: row.cells[0].textContent,
+                cognome: row.cells[1].textContent,
+                indirizzo: row.cells[2].textContent,
+                telefono: row.cells[3].textContent,
+                tipoIntervento: row.cells[4].textContent,
+                appuntamento: row.cells[5].textContent
+            };
+            
+            if (intervento.appuntamento) {
+                aggiungiRigaTabella(tabellaInterventiInCorso, intervento, 'inCorso');
+            } else {
+aggiungiRigaTabella(tabellaClienti, intervento, 'daPianificare');
+            }
+            
+            row.remove();
+            salvaDati();
+            showToast('Intervento ripristinato');
+        }
+
+        function eliminaDefinitivamente(button) {
+            if (confirm('Sei sicuro di voler eliminare definitivamente questo intervento?')) {
+                button.closest('tr').remove();
+                salvaDati();
+                showToast('Intervento eliminato definitivamente');
+            }
+        }
+
+        svuotaCestino.addEventListener('click', () => {
+            if (confirm('Sei sicuro di voler svuotare il cestino? Questa azione è irreversibile.')) {
+                tabellaCestino.innerHTML = '';
+                salvaDati();
+                showToast('Cestino svuotato');
+            }
+        });
 
         // Funzioni per la rubrica
         function pianificaInterventoRubrica(button) {
@@ -837,9 +1101,18 @@ const y = (e.clientY || e.touches[0].clientY) - rect.top;
 
         function eliminaContattoRubrica(button) {
             if (confirm('Sei sicuro di voler eliminare questo contatto dalla rubrica?')) {
-                button.closest('tr').remove();
+                const row = button.closest('tr');
+                const contatto = {
+                    nome: row.cells[0].textContent,
+                    cognome: row.cells[1].textContent,
+                    indirizzo: row.cells[2].textContent,
+                    telefono: row.cells[3].textContent,
+                    tipoIntervento: 'Contatto Rubrica'
+                };
+                aggiungiRigaTabella(tabellaCestino, contatto, 'cestino');
+                row.remove();
                 salvaDati();
-                showToast('Contatto eliminato dalla rubrica');
+                showToast('Contatto eliminato dalla rubrica e spostato nel cestino');
             }
         }
 
@@ -981,7 +1254,7 @@ const y = (e.clientY || e.touches[0].clientY) - rect.top;
             // Qui dovresti implementare una vera autenticazione.
             // Per questo esempio, usiamo una password hardcoded.
             if (password === 'password') {
-                loginPage.classList.add('hidden');
+                document.getElementById('loginPage').style.display = 'none';
                 mostraElementiPrincipali();
                 showToast('Accesso effettuato con successo!');
                 caricaDati(); // Carica i dati dopo il login
@@ -1003,6 +1276,118 @@ const y = (e.clientY || e.touches[0].clientY) - rect.top;
                 modalFirma.style.display = 'none';
             }
         }
+
+        // Funzioni per la modifica degli interventi e dei contatti
+        function modificaIntervento(button) {
+            const row = button.closest('tr');
+            const cells = row.cells;
+
+            // Sostituisci il contenuto delle celle con input
+            for (let i = 0; i < cells.length - 1; i++) {
+                const cellContent = cells[i].textContent;
+                cells[i].innerHTML = `<input type="text" value="${cellContent}">`;
+            }
+
+            // Cambia i pulsanti
+            const azioniCell = cells[cells.length - 1];
+            azioniCell.innerHTML = `
+                <div class="azioni-intervento">
+                    <button onclick="salvaModificheIntervento(this)" class="btn-modifica"><i class="fas fa-save"></i> Salva</button>
+                    <button onclick="annullaModificheIntervento(this)" class="btn-elimina"><i class="fas fa-times"></i> Annulla</button>
+                </div>
+            `;
+        }
+
+        function salvaModificheIntervento(button) {
+            const row = button.closest('tr');
+            const cells = row.cells;
+
+            // Salva i nuovi valori
+            for (let i = 0; i < cells.length - 1; i++) {
+                const input = cells[i].querySelector('input');
+                cells[i].textContent = input.value;
+            }
+
+            // Ripristina i pulsanti originali
+            ripristinaPulsantiOriginali(row, 'daPianificare');
+
+            salvaDati();
+            showToast('Modifiche salvate con successo');
+        }
+
+        function annullaModificheIntervento(button) {
+            const row = button.closest('tr');
+            ripristinaPulsantiOriginali(row, 'daPianificare');
+        }
+
+        function modificaContatto(button) {
+            const row = button.closest('tr');
+            const cells = row.cells;
+
+            // Sostituisci il contenuto delle celle con input
+            for (let i = 0; i < cells.length - 1; i++) {
+                const cellContent = cells[i].textContent;
+                cells[i].innerHTML = `<input type="text" value="${cellContent}">`;
+            }
+
+            // Cambia i pulsanti
+            const azioniCell = cells[cells.length - 1];
+            azioniCell.innerHTML = `
+                <div class="azioni-intervento">
+                    <button onclick="salvaModificheContatto(this)" class="btn-modifica"><i class="fas fa-save"></i> Salva</button>
+                    <button onclick="annullaModificheContatto(this)" class="btn-elimina"><i class="fas fa-times"></i> Annulla</button>
+                </div>
+            `;
+        }
+
+        function salvaModificheContatto(button) {
+            const row = button.closest('tr');
+            const cells = row.cells;
+
+            // Salva i nuovi valori
+            for (let i = 0; i < cells.length - 1; i++) {
+                const input = cells[i].querySelector('input');
+                cells[i].textContent = input.value;
+            }
+
+            // Ripristina i pulsanti originali
+            ripristinaPulsantiOriginali(row, 'rubrica');
+
+            salvaDati();
+            showToast('Modifiche al contatto salvate con successo');
+        }
+
+        function annullaModificheContatto(button) {
+            const row = button.closest('tr');
+            ripristinaPulsantiOriginali(row, 'rubrica');
+        }
+
+        function ripristinaPulsantiOriginali(row, tipo) {
+            const azioniCell = row.cells[row.cells.length - 1];
+            if (tipo === 'daPianificare') {
+                azioniCell.innerHTML = `
+                    <div class="azioni-intervento">
+                        <button onclick="modificaIntervento(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i> Modifica</button>
+                        <button onclick="pianificaAppuntamento(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i> Pianifica</button>
+                        <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i> Elimina</button>
+                    </div>
+                `;
+            } else if (tipo === 'rubrica') {
+                azioniCell.innerHTML = `
+                    <div class="azioni-intervento">
+                        <button onclick="modificaContatto(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i> Modifica</button>
+                        <button onclick="pianificaInterventoRubrica(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i> Pianifica</button>
+                        <button onclick="eliminaContattoRubrica(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i> Elimina</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Inizializzazione dell'applicazione
+        document.addEventListener('DOMContentLoaded', () => {
+            nascondiElementiPrincipali();
+            // Altre inizializzazioni se necessarie
+        });
     </script>
 </body>
 </html>

@@ -45,6 +45,7 @@
             top: 0;
             overflow-y: auto;
             padding: 20px;
+            z-index: 1000;
         }
 
         .sidebar h1 {
@@ -160,13 +161,13 @@
 
         .modal-content {
             background-color: #fefefe;
-            margin: 10% auto;
+            margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
             max-width: 500px;
             border-radius: 8px;
-            max-height: 80vh;
+            max-height: 90vh;
             overflow-y: auto;
             position: relative;
         }
@@ -195,6 +196,7 @@
             height: 150px;
             display: block;
             margin: 20px auto;
+            touch-action: none;
         }
 
         .stato-appuntamento {
@@ -415,7 +417,7 @@
         .btn-modifica { background-color: #3498db; }
         .btn-pianifica { background-color: #2ecc71; }
         .btn-firma { background-color: #f39c12; }
-        .btn-pdf { background-color: #9b59b6; }
+        .btn-pdf { background-color: #3498db; }
         .btn-elimina { background-color: #e74c3c; }
         .btn-ripristina { background-color: #1abc9c; }
 
@@ -536,9 +538,9 @@
             }
 
             .modal-content {
-                margin: 5% auto;
+margin: 2% auto;
                 width: 95%;
-                max-height: 90vh;
+                max-height: 96vh;
             }
 
             .login-box {
@@ -845,7 +847,7 @@
             changeActiveButton(btnInterventiInCorso);
             nuovoClienteForm.style.display = 'none';
             listaClienti.style.display = 'none';
-interventiCompletati.style.display = 'none';
+            interventiCompletati.style.display = 'none';
             interventiInCorso.style.display = 'block';
             rubrica.style.display = 'none';
             calendario.style.display = 'none';
@@ -869,7 +871,7 @@ interventiCompletati.style.display = 'none';
             changeActiveButton(btnRubrica);
             nuovoClienteForm.style.display = 'none';
             listaClienti.style.display = 'none';
-            interventiCompletati.style.display = 'none';
+interventiCompletati.style.display = 'none';
             interventiInCorso.style.display = 'none';
             rubrica.style.display = 'block';
             calendario.style.display = 'none';
@@ -1137,7 +1139,7 @@ interventiCompletati.style.display = 'none';
             for (let i = 0; i < clienteSelezionato.cells.length - 1; i++) {
                 newRow.insertCell().textContent = clienteSelezionato.cells[i].textContent;
             }
-newRow.insertCell().innerHTML = `
+            newRow.insertCell().innerHTML = `
                 <div class="azioni-intervento">
                     <button onclick="visualizzaPDF(this)" class="btn-pdf"><i class="fas fa-file-pdf"></i><span class="btn-text"> PDF</span></button>
                     <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i><span class="btn-text"> Elimina</span></button>
@@ -1159,7 +1161,7 @@ newRow.insertCell().innerHTML = `
                 nome: row.cells[0].textContent,
                 cognome: row.cells[1].textContent,
                 indirizzo: row.cells[2].textContent,
-                telefono: row.cells[3].textContent,
+telefono: row.cells[3].textContent,
                 tipoIntervento: row.cells[4].textContent,
                 appuntamento: row.cells[5].textContent
             };
@@ -1183,8 +1185,18 @@ newRow.insertCell().innerHTML = `
             doc.text(`Data e ora firma: ${formatDataItaliana(new Date())} ${formatOraItaliana(new Date())}`, 20, 160);
 
             const pdfDataUri = doc.output('datauristring');
-            const newWindow = window.open();
-            newWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`);
+            
+            // Modifica per aprire direttamente il PDF su dispositivi mobili
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                // Per dispositivi mobili, creiamo un Blob e lo apriamo direttamente
+                const blob = doc.output('blob');
+                const blobUrl = URL.createObjectURL(blob);
+                window.open(blobUrl, '_blank');
+            } else {
+                // Per desktop, usiamo il metodo precedente
+                const newWindow = window.open();
+                newWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`);
+            }
         }
 
         // Funzione per eliminare un intervento
@@ -1465,7 +1477,7 @@ newRow.insertCell().innerHTML = `
             const cells = row.cells;
 
             // Salva i nuovi valori
-for (let i = 0; i < cells.length - 1; i++) {
+            for (let i = 0; i < cells.length - 1; i++) {
                 const input = cells[i].querySelector('input');
                 cells[i].textContent = input.value;
             }
@@ -1477,7 +1489,7 @@ for (let i = 0; i < cells.length - 1; i++) {
             showToast('Modifiche salvate con successo');
         }
 
-        function annullaModificheIntervento(button) {
+function annullaModificheIntervento(button) {
             const row = button.closest('tr');
             ripristinaPulsantiOriginali(row, 'daPianificare');
         }
@@ -1548,11 +1560,13 @@ for (let i = 0; i < cells.length - 1; i++) {
         // Gestione del menu hamburger
         hamburgerMenu.addEventListener('click', () => {
             sidebar.classList.toggle('active');
+            hamburgerMenu.style.display = sidebar.classList.contains('active') ? 'none' : 'block';
         });
 
         document.addEventListener('click', (e) => {
             if (!sidebar.contains(e.target) && e.target !== hamburgerMenu) {
                 sidebar.classList.remove('active');
+                hamburgerMenu.style.display = 'block';
             }
         });
 
@@ -1560,6 +1574,7 @@ for (let i = 0; i < cells.length - 1; i++) {
             button.addEventListener('click', () => {
                 if (window.innerWidth <= 768) {
                     sidebar.classList.remove('active');
+                    hamburgerMenu.style.display = 'block';
                 }
             });
         });
@@ -1577,6 +1592,7 @@ for (let i = 0; i < cells.length - 1; i++) {
             nascondiElementiPrincipali();
             // Altre inizializzazioni se necessarie
         });
+
     </script>
 </body>
 </html>

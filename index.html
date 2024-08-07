@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -328,6 +329,11 @@
             #areaFirma {
                 max-width: 100%;
             }
+
+            #loginPage {
+                align-items: flex-start;
+                padding-top: 20vh;
+            }
         }
 
         @media screen and (max-width: 600px) {
@@ -339,37 +345,32 @@
                 font-size: 16px;
             }
 
-            table, thead, tbody, th, td, tr {
-                display: block;
+            .intervento-card {
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 15px;
+                margin-bottom: 20px;
             }
 
-            thead tr {
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
-            }
-
-            tr {
+            .intervento-card div {
                 margin-bottom: 10px;
             }
 
-            td {
-                border: none;
-                position: relative;
-                padding-left: 50%;
-                text-align: right;
-                display: block;
-            }
-
-            td:before {
-                content: attr(data-label);
-                float: left;
+            .intervento-card label {
                 font-weight: bold;
-                text-transform: uppercase;
+                display: block;
+                margin-bottom: 2px;
             }
 
-            td:last-child {
-                border-bottom: 0;
+            .azioni-intervento {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 15px;
+            }
+
+            .azioni-intervento button {
+                flex: 1;
+                margin: 0 5px;
             }
         }
     </style>
@@ -411,78 +412,29 @@
 
             <div class="container" id="listaClienti" style="display: none;">
                 <h2>Interventi da pianificare</h2>
-                <table id="tabellaClienti">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Cognome</th>
-                            <th>Indirizzo</th>
-                            <th>Telefono</th>
-                            <th>Tipo Intervento</th>
-                            <th>Azioni</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div id="tabellaClienti"></div>
             </div>
 
             <div class="container" id="interventiInCorso" style="display: none;">
                 <h2>Interventi in corso</h2>
-                <table id="tabellaInterventiInCorso">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Cognome</th>
-                            <th>Indirizzo</th>
-                            <th>Telefono</th>
-                            <th>Tipo Intervento</th>
-                            <th>Appuntamento</th>
-                            <th>Azioni</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div id="tabellaInterventiInCorso"></div>
             </div>
 
             <div class="container" id="interventiCompletati" style="display: none;">
                 <h2>Interventi completati</h2>
-                <table id="tabellaInterventiCompletati">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Cognome</th>
-                            <th>Indirizzo</th>
-                            <th>Telefono</th>
-                            <th>Tipo Intervento</th>
-                            <th>Appuntamento</th>
-                            <th>Azioni</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div id="tabellaInterventiCompletati"></div>
             </div>
 
             <div class="container" id="rubrica" style="display: none;">
                 <h2>Rubrica Clienti</h2>
-                <table id="tabellaRubrica">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Cognome</th>
-                            <th>Indirizzo</th>
-                            <th>Telefono</th>
-                            <th>Azioni</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div id="tabellaRubrica"></div>
             </div>
         </div>
 
         <div id="modalAppuntamento" class="modal">
             <div class="modal-content">
                 <h2>Pianifica Appuntamento</h2>
-<form id="formAppuntamento">
+                <form id="formAppuntamento">
                     <input type="date" id="dataAppuntamento" required>
                     <input type="time" id="oraAppuntamento" required>
                     <button type="submit">Conferma Appuntamento</button>
@@ -509,7 +461,7 @@
                 <form id="formModificaContatto">
                     <input type="text" id="modNome" placeholder="Nome" required>
                     <input type="text" id="modCognome" placeholder="Cognome" required>
-                    <input type="text" id="modIndirizzo" placeholder="Indirizzo" required>
+<input type="text" id="modIndirizzo" placeholder="Indirizzo" required>
                     <input type="tel" id="modTelefono" placeholder="Telefono" required>
                     <button type="submit">Salva</button>
                     <button type="button" id="annullaModifica">Annulla</button>
@@ -551,7 +503,7 @@
         const nuovoClienteForm = document.getElementById('nuovoClienteForm');
         const interventoForm = document.getElementById('interventoForm');
         const listaClienti = document.getElementById('listaClienti');
-        const tabellaClienti = document.getElementById('tabellaClienti').getElementsByTagName('tbody')[0];
+        const tabellaClienti = document.getElementById('tabellaClienti');
         const formAppuntamento = document.getElementById('formAppuntamento');
         const modalFirma = document.getElementById('modalFirma');
         const areaFirma = document.getElementById('areaFirma');
@@ -559,11 +511,11 @@
         const pulisciFirma = document.getElementById('pulisciFirma');
         const confermaFirma = document.getElementById('confermaFirma');
         const interventiCompletati = document.getElementById('interventiCompletati');
-        const tabellaInterventiCompletati = document.getElementById('tabellaInterventiCompletati').getElementsByTagName('tbody')[0];
+        const tabellaInterventiCompletati = document.getElementById('tabellaInterventiCompletati');
         const interventiInCorso = document.getElementById('interventiInCorso');
-        const tabellaInterventiInCorso = document.getElementById('tabellaInterventiInCorso').getElementsByTagName('tbody')[0];
+        const tabellaInterventiInCorso = document.getElementById('tabellaInterventiInCorso');
         const rubrica = document.getElementById('rubrica');
-        const tabellaRubrica = document.getElementById('tabellaRubrica').getElementsByTagName('tbody')[0];
+        const tabellaRubrica = document.getElementById('tabellaRubrica');
         const modalModificaContatto = document.getElementById('modalModificaContatto');
         const formModificaContatto = document.getElementById('formModificaContatto');
         const annullaModifica = document.getElementById('annullaModifica');
@@ -611,9 +563,9 @@
 
         // Funzione per aggiornare i contatori
         function aggiornaContatori() {
-            document.getElementById('interventiCounter').textContent = tabellaClienti.rows.length;
-            document.getElementById('interventiInCorsoCounter').textContent = tabellaInterventiInCorso.rows.length;
-            document.getElementById('interventiCompletatiCounter').textContent = tabellaInterventiCompletati.rows.length;
+            document.getElementById('interventiCounter').textContent = tabellaClienti.children.length;
+            document.getElementById('interventiInCorsoCounter').textContent = tabellaInterventiInCorso.children.length;
+            document.getElementById('interventiCompletatiCounter').textContent = tabellaInterventiCompletati.children.length;
         }
 
         // Event Listeners per i pulsanti della sidebar
@@ -665,37 +617,37 @@
         // Funzioni per la gestione dei dati
         function salvaDati() {
             const interventi = {
-                daPianificare: Array.from(tabellaClienti.rows).map(row => ({
-                    nome: row.cells[0].textContent,
-                    cognome: row.cells[1].textContent,
-                    indirizzo: row.cells[2].textContent,
-                    telefono: row.cells[3].textContent,
-                    tipoIntervento: row.cells[4].textContent
+                daPianificare: Array.from(tabellaClienti.children).map(card => ({
+                    nome: card.querySelector('[data-label="Nome"]').textContent,
+                    cognome: card.querySelector('[data-label="Cognome"]').textContent,
+                    indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
+                    telefono: card.querySelector('[data-label="Telefono"]').textContent,
+                    tipoIntervento: card.querySelector('[data-label="Tipo Intervento"]').textContent
                 })),
-                inCorso: Array.from(tabellaInterventiInCorso.rows).map(row => ({
-                    nome: row.cells[0].textContent,
-                    cognome: row.cells[1].textContent,
-                    indirizzo: row.cells[2].textContent,
-                    telefono: row.cells[3].textContent,
-                    tipoIntervento: row.cells[4].textContent,
-                    appuntamento: row.cells[5].textContent
+                inCorso: Array.from(tabellaInterventiInCorso.children).map(card => ({
+                    nome: card.querySelector('[data-label="Nome"]').textContent,
+                    cognome: card.querySelector('[data-label="Cognome"]').textContent,
+                    indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
+                    telefono: card.querySelector('[data-label="Telefono"]').textContent,
+                    tipoIntervento: card.querySelector('[data-label="Tipo Intervento"]').textContent,
+                    appuntamento: card.querySelector('[data-label="Appuntamento"]').textContent
                 })),
-                completati: Array.from(tabellaInterventiCompletati.rows).map(row => ({
-                    nome: row.cells[0].textContent,
-                    cognome: row.cells[1].textContent,
-                    indirizzo: row.cells[2].textContent,
-                    telefono: row.cells[3].textContent,
-                    tipoIntervento: row.cells[4].textContent,
-                    appuntamento: row.cells[5].textContent
+                completati: Array.from(tabellaInterventiCompletati.children).map(card => ({
+                    nome: card.querySelector('[data-label="Nome"]').textContent,
+                    cognome: card.querySelector('[data-label="Cognome"]').textContent,
+                    indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
+                    telefono: card.querySelector('[data-label="Telefono"]').textContent,
+                    tipoIntervento: card.querySelector('[data-label="Tipo Intervento"]').textContent,
+                    appuntamento: card.querySelector('[data-label="Appuntamento"]').textContent
                 }))
             };
             localStorage.setItem('interventi', JSON.stringify(interventi));
             
-            const contatti = Array.from(tabellaRubrica.rows).map(row => ({
-                nome: row.cells[0].textContent,
-                cognome: row.cells[1].textContent,
-                indirizzo: row.cells[2].textContent,
-                telefono: row.cells[3].textContent
+            const contatti = Array.from(tabellaRubrica.children).map(card => ({
+                nome: card.querySelector('[data-label="Nome"]').textContent,
+                cognome: card.querySelector('[data-label="Cognome"]').textContent,
+                indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
+                telefono: card.querySelector('[data-label="Telefono"]').textContent
             }));
             localStorage.setItem('rubrica', JSON.stringify(contatti));
             
@@ -722,40 +674,40 @@
         }
 
         function aggiungiRigaTabella(tabella, intervento, tipo) {
-            const newRow = tabella.insertRow();
-            newRow.innerHTML = `
-                <td data-label="Nome">${intervento.nome}</td>
-                <td data-label="Cognome">${intervento.cognome}</td>
-                <td data-label="Indirizzo">${intervento.indirizzo}</td>
-                <td data-label="Telefono">${intervento.telefono}</td>
-                <td data-label="Tipo Intervento">${intervento.tipoIntervento}</td>
-                ${tipo !== 'daPianificare' ? `<td data-label="Appuntamento">${intervento.appuntamento || ''}</td>` : ''}
-                <td data-label="Azioni">
-                    <div class="azioni-intervento">
-                        <button onclick="apriModalModificaIntervento(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
-                        ${tipo === 'daPianificare' ? '<button onclick="pianificaAppuntamento(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i></button>' : ''}
-                        ${tipo === 'inCorso' ? '<button onclick="apriModalFirma(this)" class="btn-firma">Firma</button>' : ''}
-                        ${tipo === 'completati' ? '<button onclick="visualizzaPDF(this)" class="btn-pdf"><i class="fas fa-file-pdf"></i></button>' : ''}
-                        <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </td>
+            const card = document.createElement('div');
+            card.className = 'intervento-card';
+            card.innerHTML = `
+                <div><label>NOME:</label> <span data-label="Nome">${intervento.nome}</span></div>
+                <div><label>COGNOME:</label> <span data-label="Cognome">${intervento.cognome}</span></div>
+                <div><label>INDIRIZZO:</label> <span data-label="Indirizzo">${intervento.indirizzo}</span></div>
+                <div><label>TELEFONO:</label> <span data-label="Telefono">${intervento.telefono}</span></div>
+                <div><label>TIPO INTERVENTO:</label> <span data-label="Tipo Intervento">${intervento.tipoIntervento}</span></div>
+                ${tipo !== 'daPianificare' ? `<div><label>APPUNTAMENTO:</label> <span data-label="Appuntamento">${intervento.appuntamento || ''}</span></div>` : ''}
+                <div class="azioni-intervento">
+                    <button onclick="apriModalModificaIntervento(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
+                    ${tipo === 'daPianificare' ? '<button onclick="pianificaAppuntamento(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i></button>' : ''}
+                    ${tipo === 'inCorso' ? '<button onclick="apriModalFirma(this)" class="btn-firma">Firma</button>' : ''}
+                    ${tipo === 'completati' ? '<button onclick="visualizzaPDF(this)" class="btn-pdf"><i class="fas fa-file-pdf"></i></button>' : ''}
+                    <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
+                </div>
             `;
+            tabella.appendChild(card);
         }
 
         function aggiungiRigaRubrica(contatto) {
-            const newRow = tabellaRubrica.insertRow();
-            newRow.innerHTML = `
-                <td data-label="Nome">${contatto.nome}</td>
-                <td data-label="Cognome">${contatto.cognome}</td>
-                <td data-label="Indirizzo">${contatto.indirizzo}</td>
-                <td data-label="Telefono">${contatto.telefono}</td>
-                <td data-label="Azioni">
-                    <div class="azioni-intervento">
-                        <button onclick="apriModalModificaContatto(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
-                        <button onclick="eliminaContatto(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </td>
+            const card = document.createElement('div');
+            card.className = 'intervento-card';
+            card.innerHTML = `
+                <div><label>NOME:</label> <span data-label="Nome">${contatto.nome}</span></div>
+                <div><label>COGNOME:</label> <span data-label="Cognome">${contatto.cognome}</span></div>
+                <div><label>INDIRIZZO:</label> <span data-label="Indirizzo">${contatto.indirizzo}</span></div>
+                <div><label>TELEFONO:</label> <span data-label="Telefono">${contatto.telefono}</span></div>
+                <div class="azioni-intervento">
+                    <button onclick="apriModalModificaContatto(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
+                    <button onclick="eliminaContatto(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
+                </div>
             `;
+            tabellaRubrica.appendChild(card);
         }
 
         // Event listener per il form di nuovo cliente
@@ -768,7 +720,8 @@
                 telefono: document.getElementById('telefono').value,
                 tipoIntervento: document.getElementById('tipoIntervento').value
             };
-			aggiungiRigaTabella(tabellaClienti, nuovoCliente, 'daPianificare');
+
+            aggiungiRigaTabella(tabellaClienti, nuovoCliente, 'daPianificare');
             aggiungiRigaRubrica(nuovoCliente);
             interventoForm.reset();
             salvaDati();
@@ -776,8 +729,8 @@
         });
 
         // Funzioni per la gestione degli appuntamenti
-        function pianificaAppuntamento(button) {
-            clienteSelezionato = button.closest('tr');
+function pianificaAppuntamento(button) {
+            clienteSelezionato = button.closest('.intervento-card');
             modalAppuntamento.style.display = 'block';
         }
 
@@ -793,19 +746,16 @@
 
             const appuntamento = `${dataFormattata} ${oraFormattata}`;
             
-            const newRow = tabellaInterventiInCorso.insertRow();
-            for (let i = 0; i < clienteSelezionato.cells.length - 1; i++) {
-                newRow.insertCell().textContent = clienteSelezionato.cells[i].textContent;
-            }
-            newRow.insertCell().textContent = appuntamento;
-            newRow.insertCell().innerHTML = `
-                <div class="azioni-intervento">
-                    <button onclick="apriModalModificaIntervento(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
-                    <button onclick="apriModalFirma(this)" class="btn-firma">Firma</button>
-                    <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
-                </div>
-            `;
+            const nuovoIntervento = {
+                nome: clienteSelezionato.querySelector('[data-label="Nome"]').textContent,
+                cognome: clienteSelezionato.querySelector('[data-label="Cognome"]').textContent,
+                indirizzo: clienteSelezionato.querySelector('[data-label="Indirizzo"]').textContent,
+                telefono: clienteSelezionato.querySelector('[data-label="Telefono"]').textContent,
+                tipoIntervento: clienteSelezionato.querySelector('[data-label="Tipo Intervento"]').textContent,
+                appuntamento: appuntamento
+            };
 
+            aggiungiRigaTabella(tabellaInterventiInCorso, nuovoIntervento, 'inCorso');
             clienteSelezionato.remove();
             modalAppuntamento.style.display = 'none';
             formAppuntamento.reset();
@@ -816,7 +766,7 @@
 
         // Funzioni per la gestione della firma
         function apriModalFirma(button) {
-            clienteSelezionato = button.closest('tr');
+            clienteSelezionato = button.closest('.intervento-card');
             modalFirma.style.display = 'block';
             document.getElementById('dataOdierna').textContent = formatDataItaliana(new Date());
             document.getElementById('dataOraFirma').textContent = `Data e ora: ${formatDataItaliana(new Date())} ${formatOraItaliana(new Date())}`;
@@ -869,17 +819,16 @@
         pulisciFirma.addEventListener('click', inizializzaAreaFirma);
 
         confermaFirma.addEventListener('click', () => {
-            const newRow = tabellaInterventiCompletati.insertRow();
-            for (let i = 0; i < clienteSelezionato.cells.length - 1; i++) {
-                newRow.insertCell().textContent = clienteSelezionato.cells[i].textContent;
-            }
-            newRow.insertCell().innerHTML = `
-                <div class="azioni-intervento">
-                    <button onclick="visualizzaPDF(this)" class="btn-pdf"><i class="fas fa-file-pdf"></i></button>
-                    <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
-                </div>
-            `;
+            const nuovoIntervento = {
+                nome: clienteSelezionato.querySelector('[data-label="Nome"]').textContent,
+                cognome: clienteSelezionato.querySelector('[data-label="Cognome"]').textContent,
+                indirizzo: clienteSelezionato.querySelector('[data-label="Indirizzo"]').textContent,
+                telefono: clienteSelezionato.querySelector('[data-label="Telefono"]').textContent,
+                tipoIntervento: clienteSelezionato.querySelector('[data-label="Tipo Intervento"]').textContent,
+                appuntamento: clienteSelezionato.querySelector('[data-label="Appuntamento"]').textContent
+            };
 
+            aggiungiRigaTabella(tabellaInterventiCompletati, nuovoIntervento, 'completati');
             clienteSelezionato.remove();
             modalFirma.style.display = 'none';
             salvaDati();
@@ -888,14 +837,14 @@
 
         // Funzione per generare il PDF
         function visualizzaPDF(button) {
-            const row = button.closest('tr');
+            const card = button.closest('.intervento-card');
             const intervento = {
-                nome: row.cells[0].textContent,
-                cognome: row.cells[1].textContent,
-                indirizzo: row.cells[2].textContent,
-                telefono: row.cells[3].textContent,
-                tipoIntervento: row.cells[4].textContent,
-                appuntamento: row.cells[5].textContent
+                nome: card.querySelector('[data-label="Nome"]').textContent,
+                cognome: card.querySelector('[data-label="Cognome"]').textContent,
+                indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
+                telefono: card.querySelector('[data-label="Telefono"]').textContent,
+                tipoIntervento: card.querySelector('[data-label="Tipo Intervento"]').textContent,
+                appuntamento: card.querySelector('[data-label="Appuntamento"]').textContent
             };
 
             const doc = new jsPDF();
@@ -923,7 +872,7 @@
         // Funzione per eliminare un intervento
         function eliminaIntervento(button) {
             if (confirm('Sei sicuro di voler eliminare questo intervento?')) {
-                button.closest('tr').remove();
+                button.closest('.intervento-card').remove();
                 salvaDati();
                 showToast('Intervento eliminato');
             }
@@ -931,13 +880,11 @@
 
         // Funzioni per la rubrica
         function apriModalModificaContatto(button) {
-            contattoSelezionato = button.closest('tr');
-            const cells = contattoSelezionato.cells;
-
-            document.getElementById('modNome').value = cells[0].textContent;
-            document.getElementById('modCognome').value = cells[1].textContent;
-            document.getElementById('modIndirizzo').value = cells[2].textContent;
-            document.getElementById('modTelefono').value = cells[3].textContent;
+            contattoSelezionato = button.closest('.intervento-card');
+            document.getElementById('modNome').value = contattoSelezionato.querySelector('[data-label="Nome"]').textContent;
+            document.getElementById('modCognome').value = contattoSelezionato.querySelector('[data-label="Cognome"]').textContent;
+            document.getElementById('modIndirizzo').value = contattoSelezionato.querySelector('[data-label="Indirizzo"]').textContent;
+            document.getElementById('modTelefono').value = contattoSelezionato.querySelector('[data-label="Telefono"]').textContent;
 
             modalModificaContatto.style.display = 'block';
         }
@@ -952,16 +899,16 @@
             };
 
             const oldData = {
-                nome: contattoSelezionato.cells[0].textContent,
-                cognome: contattoSelezionato.cells[1].textContent,
-                indirizzo: contattoSelezionato.cells[2].textContent,
-                telefono: contattoSelezionato.cells[3].textContent
+                nome: contattoSelezionato.querySelector('[data-label="Nome"]').textContent,
+                cognome: contattoSelezionato.querySelector('[data-label="Cognome"]').textContent,
+                indirizzo: contattoSelezionato.querySelector('[data-label="Indirizzo"]').textContent,
+                telefono: contattoSelezionato.querySelector('[data-label="Telefono"]').textContent
             };
 
-            contattoSelezionato.cells[0].textContent = newData.nome;
-            contattoSelezionato.cells[1].textContent = newData.cognome;
-            contattoSelezionato.cells[2].textContent = newData.indirizzo;
-            contattoSelezionato.cells[3].textContent = newData.telefono;
+            contattoSelezionato.querySelector('[data-label="Nome"]').textContent = newData.nome;
+            contattoSelezionato.querySelector('[data-label="Cognome"]').textContent = newData.cognome;
+            contattoSelezionato.querySelector('[data-label="Indirizzo"]').textContent = newData.indirizzo;
+            contattoSelezionato.querySelector('[data-label="Telefono"]').textContent = newData.telefono;
 
             // Aggiorna anche gli interventi correlati
             aggiornaInterventiCorrelati(oldData, newData);
@@ -977,14 +924,14 @@
 
         function eliminaContatto(button) {
             if (confirm('Sei sicuro di voler eliminare questo contatto?')) {
-                const row = button.closest('tr');
-                const nome = row.cells[0].textContent;
-                const cognome = row.cells[1].textContent;
+                const card = button.closest('.intervento-card');
+                const nome = card.querySelector('[data-label="Nome"]').textContent;
+                const cognome = card.querySelector('[data-label="Cognome"]').textContent;
 
                 // Rimuovi gli interventi correlati
                 rimuoviInterventiCorrelati(nome, cognome);
 
-                row.remove();
+                card.remove();
                 salvaDati();
                 showToast('Contatto eliminato');
             }
@@ -993,12 +940,13 @@
         function aggiornaInterventiCorrelati(oldData, newData) {
             const tabelle = [tabellaClienti, tabellaInterventiInCorso, tabellaInterventiCompletati];
             tabelle.forEach(tabella => {
-                Array.from(tabella.rows).forEach(row => {
-                    if (row.cells[0].textContent === oldData.nome && row.cells[1].textContent === oldData.cognome) {
-                        row.cells[0].textContent = newData.nome;
-                        row.cells[1].textContent = newData.cognome;
-                        row.cells[2].textContent = newData.indirizzo;
-                        row.cells[3].textContent = newData.telefono;
+                Array.from(tabella.children).forEach(card => {
+                    if (card.querySelector('[data-label="Nome"]').textContent === oldData.nome &&
+                        card.querySelector('[data-label="Cognome"]').textContent === oldData.cognome) {
+                        card.querySelector('[data-label="Nome"]').textContent = newData.nome;
+                        card.querySelector('[data-label="Cognome"]').textContent = newData.cognome;
+                        card.querySelector('[data-label="Indirizzo"]').textContent = newData.indirizzo;
+                        card.querySelector('[data-label="Telefono"]').textContent = newData.telefono;
                     }
                 });
             });
@@ -1007,9 +955,10 @@
         function rimuoviInterventiCorrelati(nome, cognome) {
             const tabelle = [tabellaClienti, tabellaInterventiInCorso, tabellaInterventiCompletati];
             tabelle.forEach(tabella => {
-                Array.from(tabella.rows).forEach(row => {
-                    if (row.cells[0].textContent === nome && row.cells[1].textContent === cognome) {
-                        row.remove();
+                Array.from(tabella.children).forEach(card => {
+                    if (card.querySelector('[data-label="Nome"]').textContent === nome &&
+                        card.querySelector('[data-label="Cognome"]').textContent === cognome) {
+                        card.remove();
                     }
                 });
             });
@@ -1017,16 +966,15 @@
 
         // Funzione per modificare un intervento
         function apriModalModificaIntervento(button) {
-            clienteSelezionato = button.closest('tr');
-            const cells = clienteSelezionato.cells;
-
-            document.getElementById('modNome').value = cells[0].textContent;
-            document.getElementById('modCognome').value = cells[1].textContent;
-            document.getElementById('modIndirizzo').value = cells[2].textContent;
-            document.getElementById('modTelefono').value = cells[3].textContent;
-            document.getElementById('modTipoIntervento').value = cells[4].textContent;
-            if (cells.length > 5) {
-                document.getElementById('modAppuntamento').value = cells[5].textContent;
+            clienteSelezionato = button.closest('.intervento-card');
+            document.getElementById('modNome').value = clienteSelezionato.querySelector('[data-label="Nome"]').textContent;
+            document.getElementById('modCognome').value = clienteSelezionato.querySelector('[data-label="Cognome"]').textContent;
+            document.getElementById('modIndirizzo').value = clienteSelezionato.querySelector('[data-label="Indirizzo"]').textContent;
+            document.getElementById('modTelefono').value = clienteSelezionato.querySelector('[data-label="Telefono"]').textContent;
+            document.getElementById('modTipoIntervento').value = clienteSelezionato.querySelector('[data-label="Tipo Intervento"]').textContent;
+            const appuntamentoEl = clienteSelezionato.querySelector('[data-label="Appuntamento"]');
+            if (appuntamentoEl) {
+                document.getElementById('modAppuntamento').value = appuntamentoEl.textContent;
             }
 
             modalModificaIntervento.style.display = 'block';
@@ -1043,14 +991,14 @@
                 appuntamento: document.getElementById('modAppuntamento').value
             };
 
-            const cells = clienteSelezionato.cells;
-            cells[0].textContent = newData.nome;
-            cells[1].textContent = newData.cognome;
-            cells[2].textContent = newData.indirizzo;
-            cells[3].textContent = newData.telefono;
-            cells[4].textContent = newData.tipoIntervento;
-            if (cells.length > 5) {
-                cells[5].textContent = newData.appuntamento;
+            clienteSelezionato.querySelector('[data-label="Nome"]').textContent = newData.nome;
+            clienteSelezionato.querySelector('[data-label="Cognome"]').textContent = newData.cognome;
+            clienteSelezionato.querySelector('[data-label="Indirizzo"]').textContent = newData.indirizzo;
+            clienteSelezionato.querySelector('[data-label="Telefono"]').textContent = newData.telefono;
+            clienteSelezionato.querySelector('[data-label="Tipo Intervento"]').textContent = newData.tipoIntervento;
+            const appuntamentoEl = clienteSelezionato.querySelector('[data-label="Appuntamento"]');
+            if (appuntamentoEl) {
+                appuntamentoEl.textContent = newData.appuntamento;
             }
 
             modalModificaIntervento.style.display = 'none';
@@ -1074,7 +1022,7 @@
             btnNuovoCliente.click(); // Apre la scheda "Nuovo cliente" di default
         });
 
-        // Gestione del ridimensionamento della finestra
+// Gestione del ridimensionamento della finestra
         window.addEventListener('resize', inizializzaAreaFirma);
 
         // Chiusura delle modali cliccando al di fuori
@@ -1090,6 +1038,56 @@
             }
             if (event.target == modalModificaIntervento) {
                 modalModificaIntervento.style.display = 'none';
+            }
+        }
+
+        // Funzione per controllare se il dispositivo è mobile
+        function isMobileDevice() {
+            return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+        }
+
+        // Modifica la funzione visualizzaPDF per gestire dispositivi mobili
+        function visualizzaPDF(button) {
+            const card = button.closest('.intervento-card');
+            const intervento = {
+                nome: card.querySelector('[data-label="Nome"]').textContent,
+                cognome: card.querySelector('[data-label="Cognome"]').textContent,
+                indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
+                telefono: card.querySelector('[data-label="Telefono"]').textContent,
+                tipoIntervento: card.querySelector('[data-label="Tipo Intervento"]').textContent,
+                appuntamento: card.querySelector('[data-label="Appuntamento"]').textContent
+            };
+
+            const doc = new jsPDF();
+            doc.setFontSize(18);
+            doc.text('Rapporto Intervento', 105, 20, null, null, 'center');
+            doc.setFontSize(12);
+            doc.text(`Nome: ${intervento.nome}`, 20, 40);
+            doc.text(`Cognome: ${intervento.cognome}`, 20, 50);
+            doc.text(`Indirizzo: ${intervento.indirizzo}`, 20, 60);
+            doc.text(`Telefono: ${intervento.telefono}`, 20, 70);
+            doc.text(`Tipo Intervento: ${intervento.tipoIntervento}`, 20, 80);
+            doc.text(`Data e Ora Appuntamento: ${intervento.appuntamento}`, 20, 90);
+
+            const confermaText = `Il sottoscritto cliente conferma che in data ${formatDataItaliana(new Date())}, l'intervento richiesto è stato eseguito con successo e in maniera ottimale.`;
+            const splitText = doc.splitTextToSize(confermaText, 170);
+            doc.text(splitText, 20, 110);
+
+            doc.addImage(areaFirma.toDataURL(), 'PNG', 20, 130, 50, 25);
+            doc.text(`Data e ora firma: ${formatDataItaliana(new Date())} ${formatOraItaliana(new Date())}`, 20, 160);
+
+            if (isMobileDevice()) {
+                // Su dispositivi mobili, salva il PDF e apri con un'app esterna
+                const pdfBlob = doc.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                const link = document.createElement('a');
+                link.href = pdfUrl;
+                link.download = `Rapporto_${intervento.nome}_${intervento.cognome}.pdf`;
+                link.click();
+                URL.revokeObjectURL(pdfUrl);
+            } else {
+                // Su desktop, apri il PDF in una nuova scheda
+                window.open(doc.output('bloburl'), '_blank');
             }
         }
     </script>

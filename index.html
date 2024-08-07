@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -9,6 +8,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC3klEQVRYR8WXS2hTQRSG/0lqW2ox
+ahCF4kLFhYioiy6KCxFR6aJuBBFcKFoQxCiIogtdKD5AED
+tQVHSni7ern0QEXRAV8YGgFBEUpHmYmKSx+cW5zElu7txMYhe5q8w9Z/75z5kzZ84VCq5SqYTW1tYuEdmuqhER6VHRX1R9q6qTIjKmqu+EsZShBOEiWZMHEbnHjg9U9SkF3GKMHjuBXfTfZMg
+5EZkWkXeEfC83iIlmj4icVtU9FHMqJ+68qj5S1T
+eq+klE5kRktYhsVNXtItLn8J1W1Zuqeo2CDjsB+1X1cii7iPSr6h1P8z1VPR+
+YUBGRGww">
     <style>
         :root {
             --primary-color: #3498db;
@@ -144,7 +149,6 @@
             background-color: var(--primary-color);
             color: white;
             border-bottom: 2px solid #3498db;
-            font-weight: bold;
         }
 
         .modal {
@@ -167,10 +171,8 @@
             width: 80%;
             max-width: 500px;
             border-radius: 8px;
-        }
-
-        #modalFirma .modal-content {
-            margin: 5% auto;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         #areaFirma {
@@ -230,6 +232,148 @@
             to {top: 0; opacity: 0;}
         }
 
+        #calendarioContainer {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+        }
+
+        .giorno-calendario {
+            background-color: white;
+            padding: 5px;
+            text-align: left;
+            font-size: 0.8em;
+            min-height: 100px;
+            overflow-y: auto;
+        }
+
+        .giorno-calendario.header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .mese-anno {
+            grid-column: 1 / -1;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .controlli-calendario {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        #prossimiEventi {
+            margin-top: 20px;
+        }
+
+        #prossimiEventi li {
+            margin-bottom: 10px;
+        }
+
+        .evento-calendario {
+            background-color: var(--warning-color);
+            color: white;
+            padding: 2px 4px;
+            margin-bottom: 2px;
+            border-radius: 2px;
+            font-size: 0.7em;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 10px;
+            }
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f0f2f5;
+            z-index: 1000;
+        }
+
+        .login-box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
+        }
+
+        .login-header {
+            margin-bottom: 30px;
+        }
+
+        .login-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .login-welcome {
+            color: var(--text-color);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .input-group input {
+            padding-left: 35px;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover {
+            background-color: var(--secondary-color);
+        }
+
         .hidden {
             display: none !important;
         }
@@ -244,266 +388,205 @@
             margin-left: 5px;
         }
 
-        .azioni-intervento {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-            gap: 5px;
-        }
-
         .azioni-intervento button {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
+            margin-right: 5px;
         }
 
         .btn-modifica { background-color: #3498db; }
         .btn-pianifica { background-color: #2ecc71; }
         .btn-firma { background-color: #f39c12; }
-        .btn-pdf { background-color: #3498db; }
+        .btn-pdf { background-color: #9b59b6; }
         .btn-elimina { background-color: #e74c3c; }
-
-        #loginPage {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100vw;
-            background-color: var(--background-color);
-        }
-
-        #loginForm {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 300px;
-        }
-
-        @media screen and (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: static;
-                padding: 10px;
-            }
-
-            .nav-buttons {
-                display: none;
-                flex-direction: column;
-            }
-
-            .nav-buttons.show {
-                display: flex;
-            }
-
-            .hamburger {
-                display: block;
-                font-size: 24px;
-                cursor: pointer;
-                margin-bottom: 10px;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 10px;
-            }
-
-            table {
-                font-size: 14px;
-            }
-
-            th, td {
-                padding: 8px;
-            }
-
-            .modal-content {
-                width: 90%;
-                max-width: none;
-            }
-
-            #areaFirma {
-                max-width: 100%;
-            }
-
-            #loginPage {
-                align-items: flex-start;
-                padding-top: 20vh;
-            }
-        }
-
-        @media screen and (max-width: 600px) {
-            .container {
-                padding: 15px;
-            }
-
-            input, textarea, button {
-                font-size: 16px;
-            }
-
-            .intervento-card {
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                padding: 15px;
-                margin-bottom: 20px;
-            }
-
-            .intervento-card div {
-                margin-bottom: 10px;
-            }
-
-            .intervento-card label {
-                font-weight: bold;
-                display: block;
-                margin-bottom: 2px;
-            }
-
-            .azioni-intervento {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 15px;
-            }
-
-            .azioni-intervento button {
-                flex: 1;
-                margin: 0 5px;
-            }
-        }
+        .btn-ripristina { background-color: #1abc9c; }
     </style>
 </head>
 <body>
-    <div id="loginPage">
-        <form id="loginForm">
-            <i class="fas fa-hard-hat fa-5x" style="color: #3498db; margin-bottom: 20px;"></i>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Accedi</button>
-        </form>
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <i class="fas fa-tools login-icon"></i>
+                <h2>Gestione Interventi</h2>
+            </div>
+            <p class="login-welcome">Benvenuto! Inserisci la password per accedere.</p>
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="login-button">Accedi</button>
+            </form>
+        </div>
     </div>
 
-    <div id="appContent" style="display: none;">
-        <div class="sidebar">
-            <h1>Gestione Interventi</h1>
-            <div class="hamburger" onclick="toggleMenu()">☰</div>
-            <div class="nav-buttons">
-                <button id="btnNuovoCliente"><i class="fas fa-user-plus"></i> Nuovo Cliente</button>
-                <button id="btnInterventi"><i class="fas fa-calendar-plus"></i> Da pianificare <span class="notifica-counter" id="interventiCounter">0</span></button>
-                <button id="btnInterventiInCorso"><i class="fas fa-hard-hat"></i> In corso <span class="notifica-counter" id="interventiInCorsoCounter">0</span></button>
-                <button id="btnInterventiCompletati"><i class="fas fa-check-circle"></i> Completati <span class="notifica-counter" id="interventiCompletatiCounter">0</span></button>
-                <button id="btnRubrica"><i class="fas fa-address-book"></i> Rubrica</button>
-            </div>
+    <div class="sidebar">
+        <h1>Gestione Interventi</h1>
+        <div class="nav-buttons">
+            <button id="btnNuovoCliente"><i class="fas fa-user-plus"></i> Nuovo Cliente</button>
+            <button id="btnInterventi"><i class="fas fa-calendar-plus" style="color: #e74c3c;"></i> Da pianificare <span class="notifica-counter" id="interventiCounter">0</span></button>
+            <button id="btnInterventiInCorso"><i class="fas fa-hard-hat" style="color: #f39c12;"></i> In corso <span class="notifica-counter" id="interventiInCorsoCounter">0</span></button>
+            <button id="btnInterventiCompletati"><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Completati <span class="notifica-counter" id="interventiCompletatiCounter">0</span></button>
+            <button id="btnRubrica"><i class="fas fa-address-book"></i> Rubrica</button>
+            <button id="btnCalendario"><i class="fas fa-calendar-alt"></i> Calendario</button>
+            <button id="btnCestino"><i class="fas fa-trash"></i> Cestino <span class="notifica-counter" id="cestinoCounter">0</span></button>
         </div>
-
-        <div class="main-content">
-            <div class="container" id="nuovoClienteForm">
-                <h2>Nuovo Cliente</h2>
-                <form id="interventoForm">
-                    <input type="text" id="nome" placeholder="Nome" required>
-                    <input type="text" id="cognome" placeholder="Cognome" required>
-                    <input type="text" id="indirizzo" placeholder="Indirizzo" required>
-                    <input type="tel" id="telefono" placeholder="Telefono" required>
-                    <textarea id="tipoIntervento" placeholder="Tipo di intervento" required></textarea>
-                    <button type="submit">Salva</button>
-                </form>
-            </div>
-
-            <div class="container" id="listaClienti" style="display: none;">
-                <h2>Interventi da pianificare</h2>
-                <div id="tabellaClienti"></div>
-            </div>
-
-            <div class="container" id="interventiInCorso" style="display: none;">
-                <h2>Interventi in corso</h2>
-                <div id="tabellaInterventiInCorso"></div>
-            </div>
-
-            <div class="container" id="interventiCompletati" style="display: none;">
-                <h2>Interventi completati</h2>
-                <div id="tabellaInterventiCompletati"></div>
-            </div>
-
-            <div class="container" id="rubrica" style="display: none;">
-                <h2>Rubrica Clienti</h2>
-                <div id="tabellaRubrica"></div>
-            </div>
-        </div>
-
-        <div id="modalAppuntamento" class="modal">
-            <div class="modal-content">
-                <h2>Pianifica Appuntamento</h2>
-                <form id="formAppuntamento">
-                    <input type="date" id="dataAppuntamento" required>
-                    <input type="time" id="oraAppuntamento" required>
-                    <button type="submit">Conferma Appuntamento</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="modalFirma" class="modal">
-            <div class="modal-content">
-                <h2>Conferma Completamento Lavoro</h2>
-                <p>Il sottoscritto cliente conferma che in data odierna, <span id="dataOdierna"></span>, l'intervento richiesto è stato eseguito con successo e in maniera ottimale.</p>
-                <p>Firma del cliente:</p>
-                <canvas id="areaFirma"></canvas>
-                <p id="dataOraFirma"></p>
-                <br>
-                <button id="pulisciFirma">Pulisci firma</button>
-                <button id="confermaFirma">Conferma firma</button>
-            </div>
-        </div>
-
-        <div id="modalModificaContatto" class="modal">
-            <div class="modal-content">
-                <h2>Modifica Contatto</h2>
-                <form id="formModificaContatto">
-                    <input type="text" id="modNome" placeholder="Nome" required>
-                    <input type="text" id="modCognome" placeholder="Cognome" required>
-<input type="text" id="modIndirizzo" placeholder="Indirizzo" required>
-                    <input type="tel" id="modTelefono" placeholder="Telefono" required>
-                    <button type="submit">Salva</button>
-                    <button type="button" id="annullaModifica">Annulla</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="modalModificaIntervento" class="modal">
-            <div class="modal-content">
-                <h2>Modifica Intervento</h2>
-                <form id="formModificaIntervento">
-                    <input type="text" id="modNome" placeholder="Nome" required>
-                    <input type="text" id="modCognome" placeholder="Cognome" required>
-                    <input type="text" id="modIndirizzo" placeholder="Indirizzo" required>
-                    <input type="tel" id="modTelefono" placeholder="Telefono" required>
-                    <input type="text" id="modTipoIntervento" placeholder="Tipo Intervento" required>
-                    <input type="text" id="modAppuntamento" placeholder="Appuntamento">
-                    <button type="submit">Salva</button>
-                    <button type="button" id="annullaModificaIntervento">Annulla</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="toast"></div>
     </div>
+
+    <div class="main-content">
+        <div class="container" id="nuovoClienteForm">
+            <h2>Nuovo Cliente</h2>
+            <form id="interventoForm">
+                <input type="text" id="nome" placeholder="Nome" required>
+                <input type="text" id="cognome" placeholder="Cognome" required>
+<input type="text" id="indirizzo" placeholder="Indirizzo" required>
+                <input type="tel" id="telefono" placeholder="Telefono" required>
+                <textarea id="tipoIntervento" placeholder="Tipo di intervento" required></textarea>
+                <button type="submit">Salva</button>
+            </form>
+        </div>
+
+        <div class="container" id="listaClienti" style="display: none;">
+            <h2>Interventi da pianificare</h2>
+            <table id="tabellaClienti">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>Indirizzo</th>
+                        <th>Telefono</th>
+                        <th>Tipo Intervento</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="container" id="interventiInCorso" style="display: none;">
+            <h2>Interventi in corso</h2>
+            <table id="tabellaInterventiInCorso">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>Indirizzo</th>
+                        <th>Telefono</th>
+                        <th>Tipo Intervento</th>
+                        <th>Appuntamento</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="container" id="interventiCompletati" style="display: none;">
+            <h2>Interventi completati</h2>
+            <table id="tabellaInterventiCompletati">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>Indirizzo</th>
+                        <th>Telefono</th>
+                        <th>Tipo Intervento</th>
+                        <th>Appuntamento</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="container" id="rubrica" style="display: none;">
+            <h2>Rubrica Clienti</h2>
+            <table id="tabellaRubrica">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>Indirizzo</th>
+                        <th>Telefono</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="container" id="calendario" style="display: none;">
+            <h2>Calendario Appuntamenti</h2>
+            <div class="controlli-calendario">
+                <button id="mesePrecedente">&lt; Mese precedente</button>
+                <button id="meseSuccessivo">Mese successivo &gt;</button>
+            </div>
+            <div id="calendarioContainer"></div>
+            <div id="prossimiEventi">
+                <h3>Prossimi eventi</h3>
+                <ul></ul>
+            </div>
+        </div>
+
+        <div class="container" id="cestino" style="display: none;">
+            <h2>Cestino</h2>
+            <button id="svuotaCestino">Svuota cestino</button>
+            <table id="tabellaCestino">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>Indirizzo</th>
+                        <th>Telefono</th>
+                        <th>Tipo Intervento</th>
+                        <th>Appuntamento</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modalAppuntamento" class="modal">
+        <div class="modal-content">
+            <h2>Pianifica Appuntamento</h2>
+            <form id="formAppuntamento">
+                <input type="date" id="dataAppuntamento" required>
+                <input type="time" id="oraAppuntamento" required>
+                <button type="submit">Conferma Appuntamento</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalFirma" class="modal">
+        <div class="modal-content">
+            <h2>Conferma Completamento Lavoro</h2>
+            <p>Il sottoscritto cliente conferma che in data odierna, <span id="dataOdierna"></span>, l'intervento richiesto è stato eseguito con successo e in maniera ottimale.</p>
+            <p>Firma del cliente:</p>
+            <canvas id="areaFirma"></canvas>
+            <p id="dataOraFirma"></p>
+            <br>
+            <button id="pulisciFirma">Pulisci firma</button>
+            <button id="confermaFirma">Conferma firma</button>
+        </div>
+    </div>
+
+    <div id="toast"></div>
 
     <script>
         const { jsPDF } = window.jspdf;
 
         // Elementi DOM
-        const loginPage = document.getElementById('loginPage');
-        const loginForm = document.getElementById('loginForm');
-        const appContent = document.getElementById('appContent');
         const btnNuovoCliente = document.getElementById('btnNuovoCliente');
         const btnInterventi = document.getElementById('btnInterventi');
         const btnInterventiInCorso = document.getElementById('btnInterventiInCorso');
         const btnInterventiCompletati = document.getElementById('btnInterventiCompletati');
         const btnRubrica = document.getElementById('btnRubrica');
+        const btnCalendario = document.getElementById('btnCalendario');
+        const btnCestino = document.getElementById('btnCestino');
         const nuovoClienteForm = document.getElementById('nuovoClienteForm');
         const interventoForm = document.getElementById('interventoForm');
         const listaClienti = document.getElementById('listaClienti');
-        const tabellaClienti = document.getElementById('tabellaClienti');
+        const tabellaClienti = document.getElementById('tabellaClienti').getElementsByTagName('tbody')[0];
         const formAppuntamento = document.getElementById('formAppuntamento');
         const modalFirma = document.getElementById('modalFirma');
         const areaFirma = document.getElementById('areaFirma');
@@ -511,34 +594,23 @@
         const pulisciFirma = document.getElementById('pulisciFirma');
         const confermaFirma = document.getElementById('confermaFirma');
         const interventiCompletati = document.getElementById('interventiCompletati');
-        const tabellaInterventiCompletati = document.getElementById('tabellaInterventiCompletati');
+        const tabellaInterventiCompletati = document.getElementById('tabellaInterventiCompletati').getElementsByTagName('tbody')[0];
         const interventiInCorso = document.getElementById('interventiInCorso');
-        const tabellaInterventiInCorso = document.getElementById('tabellaInterventiInCorso');
+        const tabellaInterventiInCorso = document.getElementById('tabellaInterventiInCorso').getElementsByTagName('tbody')[0];
         const rubrica = document.getElementById('rubrica');
-        const tabellaRubrica = document.getElementById('tabellaRubrica');
-        const modalModificaContatto = document.getElementById('modalModificaContatto');
-        const formModificaContatto = document.getElementById('formModificaContatto');
-        const annullaModifica = document.getElementById('annullaModifica');
-        const modalModificaIntervento = document.getElementById('modalModificaIntervento');
-        const formModificaIntervento = document.getElementById('formModificaIntervento');
-        const annullaModificaIntervento = document.getElementById('annullaModificaIntervento');
+        const tabellaRubrica = document.getElementById('tabellaRubrica').getElementsByTagName('tbody')[0];
+        const calendario = document.getElementById('calendario');
+        const calendarioContainer = document.getElementById('calendarioContainer');
+        const mesePrecedente = document.getElementById('mesePrecedente');
+        const meseSuccessivo = document.getElementById('meseSuccessivo');
+        const prossimiEventi = document.getElementById('prossimiEventi').getElementsByTagName('ul')[0];
+        const cestino = document.getElementById('cestino');
+        const tabellaCestino = document.getElementById('tabellaCestino').getElementsByTagName('tbody')[0];
+        const svuotaCestino = document.getElementById('svuotaCestino');
 
         let clienteSelezionato = null;
-        let contattoSelezionato = null;
         let isDrawing = false;
-
-        // Login
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const password = document.getElementById('password').value;
-            if (password === 'tuapassword') { // Sostituisci con la password desiderata
-                loginPage.style.display = 'none';
-                appContent.style.display = 'block';
-                caricaDati();
-            } else {
-                alert('Password non corretta');
-            }
-        });
+        let meseCorrente = new Date();
 
         // Funzioni di utilità
         function formatDataItaliana(data) {
@@ -563,9 +635,10 @@
 
         // Funzione per aggiornare i contatori
         function aggiornaContatori() {
-            document.getElementById('interventiCounter').textContent = tabellaClienti.children.length;
-            document.getElementById('interventiInCorsoCounter').textContent = tabellaInterventiInCorso.children.length;
-            document.getElementById('interventiCompletatiCounter').textContent = tabellaInterventiCompletati.children.length;
+            document.getElementById('interventiCounter').textContent = tabellaClienti.rows.length;
+            document.getElementById('interventiInCorsoCounter').textContent = tabellaInterventiInCorso.rows.length;
+            document.getElementById('interventiCompletatiCounter').textContent = tabellaInterventiCompletati.rows.length;
+            document.getElementById('cestinoCounter').textContent = tabellaCestino.rows.length;
         }
 
         // Event Listeners per i pulsanti della sidebar
@@ -576,6 +649,8 @@
             interventiCompletati.style.display = 'none';
             interventiInCorso.style.display = 'none';
             rubrica.style.display = 'none';
+            calendario.style.display = 'none';
+            cestino.style.display = 'none';
         });
 
         btnInterventi.addEventListener('click', () => {
@@ -585,6 +660,9 @@
             interventiCompletati.style.display = 'none';
             interventiInCorso.style.display = 'none';
             rubrica.style.display = 'none';
+            calendario.style.display = 'none';
+            cestino.style.display = 'none';
+            aggiornaListaClientiDaPianificare();
         });
 
         btnInterventiInCorso.addEventListener('click', () => {
@@ -594,6 +672,9 @@
             interventiCompletati.style.display = 'none';
             interventiInCorso.style.display = 'block';
             rubrica.style.display = 'none';
+            calendario.style.display = 'none';
+            cestino.style.display = 'none';
+            aggiornaInterventiInCorso();
         });
 
         btnInterventiCompletati.addEventListener('click', () => {
@@ -603,6 +684,9 @@
             interventiCompletati.style.display = 'block';
             interventiInCorso.style.display = 'none';
             rubrica.style.display = 'none';
+            calendario.style.display = 'none';
+            cestino.style.display = 'none';
+            aggiornaInterventiCompletati();
         });
 
         btnRubrica.addEventListener('click', () => {
@@ -612,42 +696,77 @@
             interventiCompletati.style.display = 'none';
             interventiInCorso.style.display = 'none';
             rubrica.style.display = 'block';
+            calendario.style.display = 'none';
+            cestino.style.display = 'none';
+            aggiornaRubrica();
+        });
+
+        btnCalendario.addEventListener('click', () => {
+            changeActiveButton(btnCalendario);
+            nuovoClienteForm.style.display = 'none';
+            listaClienti.style.display = 'none';
+            interventiCompletati.style.display = 'none';
+            interventiInCorso.style.display = 'none';
+            rubrica.style.display = 'none';
+            calendario.style.display = 'block';
+            cestino.style.display = 'none';
+            generaCalendario();
+            aggiornaProssimiEventi();
+        });
+
+        btnCestino.addEventListener('click', () => {
+            changeActiveButton(btnCestino);
+            nuovoClienteForm.style.display = 'none';
+            listaClienti.style.display = 'none';
+            interventiCompletati.style.display = 'none';
+            interventiInCorso.style.display = 'none';
+            rubrica.style.display = 'none';
+            calendario.style.display = 'none';
+            cestino.style.display = 'block';
         });
 
         // Funzioni per la gestione dei dati
         function salvaDati() {
             const interventi = {
-                daPianificare: Array.from(tabellaClienti.children).map(card => ({
-                    nome: card.querySelector('[data-label="Nome"]').textContent,
-                    cognome: card.querySelector('[data-label="Cognome"]').textContent,
-                    indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
-                    telefono: card.querySelector('[data-label="Telefono"]').textContent,
-                    tipoIntervento: card.querySelector('[data-label="Tipo Intervento"]').textContent
+                daPianificare: Array.from(tabellaClienti.rows).map(row => ({
+                    nome: row.cells[0].textContent,
+                    cognome: row.cells[1].textContent,
+                    indirizzo: row.cells[2].textContent,
+                    telefono: row.cells[3].textContent,
+                    tipoIntervento: row.cells[4].textContent
                 })),
-                inCorso: Array.from(tabellaInterventiInCorso.children).map(card => ({
-                    nome: card.querySelector('[data-label="Nome"]').textContent,
-                    cognome: card.querySelector('[data-label="Cognome"]').textContent,
-                    indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
-                    telefono: card.querySelector('[data-label="Telefono"]').textContent,
-                    tipoIntervento: card.querySelector('[data-label="Tipo Intervento"]').textContent,
-                    appuntamento: card.querySelector('[data-label="Appuntamento"]').textContent
+                inCorso: Array.from(tabellaInterventiInCorso.rows).map(row => ({
+                    nome: row.cells[0].textContent,
+                    cognome: row.cells[1].textContent,
+                    indirizzo: row.cells[2].textContent,
+                    telefono: row.cells[3].textContent,
+                    tipoIntervento: row.cells[4].textContent,
+                    appuntamento: row.cells[5].textContent
                 })),
-                completati: Array.from(tabellaInterventiCompletati.children).map(card => ({
-                    nome: card.querySelector('[data-label="Nome"]').textContent,
-                    cognome: card.querySelector('[data-label="Cognome"]').textContent,
-                    indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
-                    telefono: card.querySelector('[data-label="Telefono"]').textContent,
-                    tipoIntervento: card.querySelector('[data-label="Tipo Intervento"]').textContent,
-                    appuntamento: card.querySelector('[data-label="Appuntamento"]').textContent
+                completati: Array.from(tabellaInterventiCompletati.rows).map(row => ({
+                    nome: row.cells[0].textContent,
+                    cognome: row.cells[1].textContent,
+                    indirizzo: row.cells[2].textContent,
+                    telefono: row.cells[3].textContent,
+                    tipoIntervento: row.cells[4].textContent,
+                    appuntamento: row.cells[5].textContent
+                })),
+                cestino: Array.from(tabellaCestino.rows).map(row => ({
+                    nome: row.cells[0].textContent,
+                    cognome: row.cells[1].textContent,
+                    indirizzo: row.cells[2].textContent,
+                    telefono: row.cells[3].textContent,
+                    tipoIntervento: row.cells[4].textContent,
+                    appuntamento: row.cells[5].textContent
                 }))
             };
             localStorage.setItem('interventi', JSON.stringify(interventi));
-            
-            const contatti = Array.from(tabellaRubrica.children).map(card => ({
-                nome: card.querySelector('[data-label="Nome"]').textContent,
-                cognome: card.querySelector('[data-label="Cognome"]').textContent,
-                indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
-                telefono: card.querySelector('[data-label="Telefono"]').textContent
+
+            const contatti = Array.from(tabellaRubrica.rows).map(row => ({
+                nome: row.cells[0].textContent,
+                cognome: row.cells[1].textContent,
+                indirizzo: row.cells[2].textContent,
+telefono: row.cells[3].textContent
             }));
             localStorage.setItem('rubrica', JSON.stringify(contatti));
             
@@ -655,7 +774,7 @@
         }
 
         function caricaDati() {
-            const interventi = JSON.parse(localStorage.getItem('interventi')) || { daPianificare: [], inCorso: [], completati: [] };
+            const interventi = JSON.parse(localStorage.getItem('interventi')) || { daPianificare: [], inCorso: [], completati: [], cestino: [] };
             
             tabellaClienti.innerHTML = '';
             interventi.daPianificare.forEach(intervento => aggiungiRigaTabella(tabellaClienti, intervento, 'daPianificare'));
@@ -666,48 +785,52 @@
             tabellaInterventiCompletati.innerHTML = '';
             interventi.completati.forEach(intervento => aggiungiRigaTabella(tabellaInterventiCompletati, intervento, 'completati'));
 
+            tabellaCestino.innerHTML = '';
+            interventi.cestino.forEach(intervento => aggiungiRigaTabella(tabellaCestino, intervento, 'cestino'));
+
             const contatti = JSON.parse(localStorage.getItem('rubrica')) || [];
             tabellaRubrica.innerHTML = '';
-            contatti.sort((a, b) => a.cognome.localeCompare(b.cognome)).forEach(contatto => aggiungiRigaRubrica(contatto));
+            contatti.forEach(contatto => aggiungiRigaRubrica(contatto));
 
             aggiornaContatori();
         }
 
         function aggiungiRigaTabella(tabella, intervento, tipo) {
-            const card = document.createElement('div');
-            card.className = 'intervento-card';
-            card.innerHTML = `
-                <div><label>NOME:</label> <span data-label="Nome">${intervento.nome}</span></div>
-                <div><label>COGNOME:</label> <span data-label="Cognome">${intervento.cognome}</span></div>
-                <div><label>INDIRIZZO:</label> <span data-label="Indirizzo">${intervento.indirizzo}</span></div>
-                <div><label>TELEFONO:</label> <span data-label="Telefono">${intervento.telefono}</span></div>
-                <div><label>TIPO INTERVENTO:</label> <span data-label="Tipo Intervento">${intervento.tipoIntervento}</span></div>
-                ${tipo !== 'daPianificare' ? `<div><label>APPUNTAMENTO:</label> <span data-label="Appuntamento">${intervento.appuntamento || ''}</span></div>` : ''}
-                <div class="azioni-intervento">
-                    <button onclick="apriModalModificaIntervento(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
-                    ${tipo === 'daPianificare' ? '<button onclick="pianificaAppuntamento(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i></button>' : ''}
-                    ${tipo === 'inCorso' ? '<button onclick="apriModalFirma(this)" class="btn-firma">Firma</button>' : ''}
-                    ${tipo === 'completati' ? '<button onclick="visualizzaPDF(this)" class="btn-pdf"><i class="fas fa-file-pdf"></i></button>' : ''}
-                    <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
-                </div>
+            const newRow = tabella.insertRow();
+            newRow.innerHTML = `
+                <td>${intervento.nome}</td>
+                <td>${intervento.cognome}</td>
+                <td>${intervento.indirizzo}</td>
+                <td>${intervento.telefono}</td>
+                <td>${intervento.tipoIntervento}</td>
+                ${tipo !== 'daPianificare' ? `<td>${intervento.appuntamento || ''}</td>` : ''}
+                <td>
+                    <div class="azioni-intervento">
+                        ${tipo === 'daPianificare' ? '<button onclick="modificaIntervento(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>' : ''}
+                        ${tipo === 'daPianificare' ? '<button onclick="pianificaAppuntamento(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i></button>' : ''}
+                        ${tipo === 'inCorso' ? '<button onclick="apriModalFirma(this)" class="btn-firma">Firma</button>' : ''}
+                        ${tipo === 'completati' ? '<button onclick="visualizzaPDF(this)" class="btn-pdf"><i class="fas fa-file-pdf"></i></button>' : ''}
+                        ${tipo === 'cestino' ? '<button onclick="ripristinaIntervento(this)" class="btn-ripristina">Ripristina</button>' : ''}
+                        ${tipo !== 'cestino' ? '<button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>' : ''}
+                        ${tipo === 'cestino' ? '<button onclick="eliminaDefinitivamente(this)" class="btn-elimina"><i class="fas fa-trash"></i></button>' : ''}
+                    </div>
+                </td>
             `;
-            tabella.appendChild(card);
         }
 
         function aggiungiRigaRubrica(contatto) {
-            const card = document.createElement('div');
-            card.className = 'intervento-card';
-            card.innerHTML = `
-                <div><label>NOME:</label> <span data-label="Nome">${contatto.nome}</span></div>
-                <div><label>COGNOME:</label> <span data-label="Cognome">${contatto.cognome}</span></div>
-                <div><label>INDIRIZZO:</label> <span data-label="Indirizzo">${contatto.indirizzo}</span></div>
-                <div><label>TELEFONO:</label> <span data-label="Telefono">${contatto.telefono}</span></div>
-                <div class="azioni-intervento">
-                    <button onclick="apriModalModificaContatto(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
-                    <button onclick="eliminaContatto(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
-                </div>
+            const newRow = tabellaRubrica.insertRow();
+            newRow.innerHTML = `
+                <td>${contatto.nome}</td>
+                <td>${contatto.cognome}</td>
+                <td>${contatto.indirizzo}</td>
+                <td>${contatto.telefono}</td>
+                <td>
+                    <button onclick="modificaContatto(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
+                    <button onclick="pianificaInterventoRubrica(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i></button>
+                    <button onclick="eliminaContattoRubrica(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
+                </td>
             `;
-            tabellaRubrica.appendChild(card);
         }
 
         // Event listener per il form di nuovo cliente
@@ -729,8 +852,8 @@
         });
 
         // Funzioni per la gestione degli appuntamenti
-function pianificaAppuntamento(button) {
-            clienteSelezionato = button.closest('.intervento-card');
+        function pianificaAppuntamento(button) {
+            clienteSelezionato = button.closest('tr');
             modalAppuntamento.style.display = 'block';
         }
 
@@ -746,27 +869,31 @@ function pianificaAppuntamento(button) {
 
             const appuntamento = `${dataFormattata} ${oraFormattata}`;
             
-            const nuovoIntervento = {
-                nome: clienteSelezionato.querySelector('[data-label="Nome"]').textContent,
-                cognome: clienteSelezionato.querySelector('[data-label="Cognome"]').textContent,
-                indirizzo: clienteSelezionato.querySelector('[data-label="Indirizzo"]').textContent,
-                telefono: clienteSelezionato.querySelector('[data-label="Telefono"]').textContent,
-                tipoIntervento: clienteSelezionato.querySelector('[data-label="Tipo Intervento"]').textContent,
-                appuntamento: appuntamento
-            };
+            const newRow = tabellaInterventiInCorso.insertRow();
+            for (let i = 0; i < clienteSelezionato.cells.length - 1; i++) {
+                newRow.insertCell().textContent = clienteSelezionato.cells[i].textContent;
+            }
+            newRow.insertCell().textContent = appuntamento;
+            newRow.insertCell().innerHTML = `
+                <div class="azioni-intervento">
+                    <button onclick="apriModalFirma(this)" class="btn-firma">Firma</button>
+                    <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `;
 
-            aggiungiRigaTabella(tabellaInterventiInCorso, nuovoIntervento, 'inCorso');
             clienteSelezionato.remove();
             modalAppuntamento.style.display = 'none';
             formAppuntamento.reset();
 
             salvaDati();
             showToast("Appuntamento pianificato con successo!");
+            generaCalendario();
+            aggiornaProssimiEventi();
         });
 
         // Funzioni per la gestione della firma
         function apriModalFirma(button) {
-            clienteSelezionato = button.closest('.intervento-card');
+            clienteSelezionato = button.closest('tr');
             modalFirma.style.display = 'block';
             document.getElementById('dataOdierna').textContent = formatDataItaliana(new Date());
             document.getElementById('dataOraFirma').textContent = `Data e ora: ${formatDataItaliana(new Date())} ${formatOraItaliana(new Date())}`;
@@ -794,7 +921,7 @@ function pianificaAppuntamento(button) {
 
         function iniziaDisegno(e) {
             isDrawing = true;
-            disegna(e.type === 'touchstart' ? e.touches[0] : e);
+            disegna(e);
         }
 
         function disegna(e) {
@@ -819,32 +946,35 @@ function pianificaAppuntamento(button) {
         pulisciFirma.addEventListener('click', inizializzaAreaFirma);
 
         confermaFirma.addEventListener('click', () => {
-            const nuovoIntervento = {
-                nome: clienteSelezionato.querySelector('[data-label="Nome"]').textContent,
-                cognome: clienteSelezionato.querySelector('[data-label="Cognome"]').textContent,
-                indirizzo: clienteSelezionato.querySelector('[data-label="Indirizzo"]').textContent,
-                telefono: clienteSelezionato.querySelector('[data-label="Telefono"]').textContent,
-                tipoIntervento: clienteSelezionato.querySelector('[data-label="Tipo Intervento"]').textContent,
-                appuntamento: clienteSelezionato.querySelector('[data-label="Appuntamento"]').textContent
-            };
+            const newRow = tabellaInterventiCompletati.insertRow();
+            for (let i = 0; i < clienteSelezionato.cells.length - 1; i++) {
+                newRow.insertCell().textContent = clienteSelezionato.cells[i].textContent;
+            }
+            newRow.insertCell().innerHTML = `
+                <div class="azioni-intervento">
+                    <button onclick="visualizzaPDF(this)" class="btn-pdf"><i class="fas fa-file-pdf"></i></button>
+                    <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `;
 
-            aggiungiRigaTabella(tabellaInterventiCompletati, nuovoIntervento, 'completati');
             clienteSelezionato.remove();
             modalFirma.style.display = 'none';
             salvaDati();
             showToast("Intervento completato e spostato in Interventi Completati");
+            generaCalendario();
+            aggiornaProssimiEventi();
         });
 
-        // Funzione per generare il PDF
+        // Funzioni per la gestione dei PDF
         function visualizzaPDF(button) {
-            const card = button.closest('.intervento-card');
+            const row = button.closest('tr');
             const intervento = {
-                nome: card.querySelector('[data-label="Nome"]').textContent,
-                cognome: card.querySelector('[data-label="Cognome"]').textContent,
-                indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
-                telefono: card.querySelector('[data-label="Telefono"]').textContent,
-                tipoIntervento: card.querySelector('[data-label="Tipo Intervento"]').textContent,
-                appuntamento: card.querySelector('[data-label="Appuntamento"]').textContent
+                nome: row.cells[0].textContent,
+                cognome: row.cells[1].textContent,
+                indirizzo: row.cells[2].textContent,
+                telefono: row.cells[3].textContent,
+                tipoIntervento: row.cells[4].textContent,
+                appuntamento: row.cells[5].textContent
             };
 
             const doc = new jsPDF();
@@ -858,171 +988,260 @@ function pianificaAppuntamento(button) {
             doc.text(`Tipo Intervento: ${intervento.tipoIntervento}`, 20, 80);
             doc.text(`Data e Ora Appuntamento: ${intervento.appuntamento}`, 20, 90);
 
-            const confermaText = `Il sottoscritto cliente conferma che in data ${formatDataItaliana(new Date())}, l'intervento richiesto è stato eseguito con successo e in maniera ottimale.`;
+            // Aggiungi il testo di conferma con a capo automatico
+            const confermaText = `Il sottoscritto cliente conferma che in data ${formatDataItaliana(new Date())}, l'intervento richiesto è stato eseguito con successo e in maniera ottimale. L'intervento è stato completato secondo gli standard concordati e il cliente si dichiara pienamente soddisfatto del lavoro svolto. Questa firma costituisce accettazione e approvazione del servizio fornito.`;
             const splitText = doc.splitTextToSize(confermaText, 170);
             doc.text(splitText, 20, 110);
 
             doc.addImage(areaFirma.toDataURL(), 'PNG', 20, 130, 50, 25);
             doc.text(`Data e ora firma: ${formatDataItaliana(new Date())} ${formatOraItaliana(new Date())}`, 20, 160);
 
-            // Apre direttamente il PDF in una nuova scheda
-            window.open(doc.output('bloburl'), '_blank');
+            // Apri il PDF in una nuova finestra del browser
+            const pdfDataUri = doc.output('datauristring');
+            const newWindow = window.open();
+            newWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`);
         }
 
         // Funzione per eliminare un intervento
         function eliminaIntervento(button) {
-            if (confirm('Sei sicuro di voler eliminare questo intervento?')) {
-                button.closest('.intervento-card').remove();
+            if (confirm('Sei sicuro di voler spostare questo intervento nel cestino?')) {
+                const row = button.closest('tr');
+                const intervento = {
+                    nome: row.cells[0].textContent,
+                    cognome: row.cells[1].textContent,
+                    indirizzo: row.cells[2].textContent,
+                    telefono: row.cells[3].textContent,
+                    tipoIntervento: row.cells[4].textContent,
+                    appuntamento: row.cells[5] ? row.cells[5].textContent : ''
+                };
+                aggiungiRigaTabella(tabellaCestino, intervento, 'cestino');
+                row.remove();
                 salvaDati();
-                showToast('Intervento eliminato');
+                showToast('Intervento spostato nel cestino');
+                generaCalendario();
+                aggiornaProssimiEventi();
             }
         }
+
+        function ripristinaIntervento(button) {
+            const row = button.closest('tr');
+            const intervento = {
+                nome: row.cells[0].textContent,
+                cognome: row.cells[1].textContent,
+                indirizzo: row.cells[2].textContent,
+                telefono: row.cells[3].textContent,
+                tipoIntervento: row.cells[4].textContent,
+                appuntamento: row.cells[5].textContent
+            };
+            
+            if (intervento.appuntamento) {
+                aggiungiRigaTabella(tabellaInterventiInCorso, intervento, 'inCorso');
+            } else {
+                aggiungiRigaTabella(tabellaClienti, intervento, 'daPianificare');
+            }
+            
+            row.remove();
+            salvaDati();
+            showToast('Intervento ripristinato');
+        }
+
+        function eliminaDefinitivamente(button) {
+            if (confirm('Sei sicuro di voler eliminare definitivamente questo intervento?')) {
+                button.closest('tr').remove();
+                salvaDati();
+                showToast('Intervento eliminato definitivamente');
+            }
+        }
+
+        svuotaCestino.addEventListener('click', () => {
+            if (confirm('Sei sicuro di voler svuotare il cestino? Questa azione è irreversibile.')) {
+                tabellaCestino.innerHTML = '';
+                salvaDati();
+                showToast('Cestino svuotato');
+            }
+        });
 
         // Funzioni per la rubrica
-        function apriModalModificaContatto(button) {
-            contattoSelezionato = button.closest('.intervento-card');
-            document.getElementById('modNome').value = contattoSelezionato.querySelector('[data-label="Nome"]').textContent;
-            document.getElementById('modCognome').value = contattoSelezionato.querySelector('[data-label="Cognome"]').textContent;
-            document.getElementById('modIndirizzo').value = contattoSelezionato.querySelector('[data-label="Indirizzo"]').textContent;
-            document.getElementById('modTelefono').value = contattoSelezionato.querySelector('[data-label="Telefono"]').textContent;
-
-            modalModificaContatto.style.display = 'block';
+        function pianificaInterventoRubrica(button) {
+            const row = button.closest('tr');
+            const nuovoIntervento = {
+                nome: row.cells[0].textContent,
+                cognome: row.cells[1].textContent,
+                indirizzo: row.cells[2].textContent,
+telefono: row.cells[3].textContent,
+                tipoIntervento: ''
+            };
+            aggiungiRigaTabella(tabellaClienti, nuovoIntervento, 'daPianificare');
+            salvaDati();
+            showToast("Intervento aggiunto alla lista da pianificare");
         }
 
-        formModificaContatto.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const newData = {
-                nome: document.getElementById('modNome').value,
-                cognome: document.getElementById('modCognome').value,
-                indirizzo: document.getElementById('modIndirizzo').value,
-                telefono: document.getElementById('modTelefono').value
-            };
-
-            const oldData = {
-                nome: contattoSelezionato.querySelector('[data-label="Nome"]').textContent,
-                cognome: contattoSelezionato.querySelector('[data-label="Cognome"]').textContent,
-                indirizzo: contattoSelezionato.querySelector('[data-label="Indirizzo"]').textContent,
-                telefono: contattoSelezionato.querySelector('[data-label="Telefono"]').textContent
-            };
-
-            contattoSelezionato.querySelector('[data-label="Nome"]').textContent = newData.nome;
-            contattoSelezionato.querySelector('[data-label="Cognome"]').textContent = newData.cognome;
-            contattoSelezionato.querySelector('[data-label="Indirizzo"]').textContent = newData.indirizzo;
-            contattoSelezionato.querySelector('[data-label="Telefono"]').textContent = newData.telefono;
-
-            // Aggiorna anche gli interventi correlati
-            aggiornaInterventiCorrelati(oldData, newData);
-
-            modalModificaContatto.style.display = 'none';
-            salvaDati();
-            showToast("Contatto modificato con successo!");
-        });
-
-        annullaModifica.addEventListener('click', () => {
-            modalModificaContatto.style.display = 'none';
-        });
-
-        function eliminaContatto(button) {
-            if (confirm('Sei sicuro di voler eliminare questo contatto?')) {
-                const card = button.closest('.intervento-card');
-                const nome = card.querySelector('[data-label="Nome"]').textContent;
-                const cognome = card.querySelector('[data-label="Cognome"]').textContent;
-
-                // Rimuovi gli interventi correlati
-                rimuoviInterventiCorrelati(nome, cognome);
-
-                card.remove();
+        function eliminaContattoRubrica(button) {
+            if (confirm('Sei sicuro di voler eliminare questo contatto dalla rubrica?')) {
+                const row = button.closest('tr');
+                const contatto = {
+                    nome: row.cells[0].textContent,
+                    cognome: row.cells[1].textContent,
+                    indirizzo: row.cells[2].textContent,
+                    telefono: row.cells[3].textContent,
+                    tipoIntervento: 'Contatto Rubrica'
+                };
+                aggiungiRigaTabella(tabellaCestino, contatto, 'cestino');
+                row.remove();
                 salvaDati();
-                showToast('Contatto eliminato');
+                showToast('Contatto eliminato dalla rubrica e spostato nel cestino');
             }
         }
 
-        function aggiornaInterventiCorrelati(oldData, newData) {
-            const tabelle = [tabellaClienti, tabellaInterventiInCorso, tabellaInterventiCompletati];
-            tabelle.forEach(tabella => {
-                Array.from(tabella.children).forEach(card => {
-                    if (card.querySelector('[data-label="Nome"]').textContent === oldData.nome &&
-                        card.querySelector('[data-label="Cognome"]').textContent === oldData.cognome) {
-                        card.querySelector('[data-label="Nome"]').textContent = newData.nome;
-                        card.querySelector('[data-label="Cognome"]').textContent = newData.cognome;
-                        card.querySelector('[data-label="Indirizzo"]').textContent = newData.indirizzo;
-                        card.querySelector('[data-label="Telefono"]').textContent = newData.telefono;
-                    }
-                });
-            });
-        }
+        // Funzioni per il calendario
+        function generaCalendario() {
+            calendarioContainer.innerHTML = '';
+            const primoGiornoMese = new Date(meseCorrente.getFullYear(), meseCorrente.getMonth(), 1);
+            const ultimoGiornoMese = new Date(meseCorrente.getFullYear(), meseCorrente.getMonth() + 1, 0);
 
-        function rimuoviInterventiCorrelati(nome, cognome) {
-            const tabelle = [tabellaClienti, tabellaInterventiInCorso, tabellaInterventiCompletati];
-            tabelle.forEach(tabella => {
-                Array.from(tabella.children).forEach(card => {
-                    if (card.querySelector('[data-label="Nome"]').textContent === nome &&
-                        card.querySelector('[data-label="Cognome"]').textContent === cognome) {
-                        card.remove();
-                    }
-                });
-            });
-        }
+            const meseAnno = document.createElement('div');
+            meseAnno.className = 'mese-anno';
+            meseAnno.textContent = meseCorrente.toLocaleString('it-IT', { month: 'long', year: 'numeric' });
+            calendarioContainer.appendChild(meseAnno);
 
-        // Funzione per modificare un intervento
-        function apriModalModificaIntervento(button) {
-            clienteSelezionato = button.closest('.intervento-card');
-            document.getElementById('modNome').value = clienteSelezionato.querySelector('[data-label="Nome"]').textContent;
-            document.getElementById('modCognome').value = clienteSelezionato.querySelector('[data-label="Cognome"]').textContent;
-            document.getElementById('modIndirizzo').value = clienteSelezionato.querySelector('[data-label="Indirizzo"]').textContent;
-            document.getElementById('modTelefono').value = clienteSelezionato.querySelector('[data-label="Telefono"]').textContent;
-            document.getElementById('modTipoIntervento').value = clienteSelezionato.querySelector('[data-label="Tipo Intervento"]').textContent;
-            const appuntamentoEl = clienteSelezionato.querySelector('[data-label="Appuntamento"]');
-            if (appuntamentoEl) {
-                document.getElementById('modAppuntamento').value = appuntamentoEl.textContent;
+            const giorniSettimana = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+            giorniSettimana.forEach(giorno => {
+                const headerGiorno = document.createElement('div');
+                headerGiorno.className = 'giorno-calendario header';
+                headerGiorno.textContent = giorno;
+                calendarioContainer.appendChild(headerGiorno);
+            });
+
+            for (let i = 0; i < primoGiornoMese.getDay(); i++) {
+                calendarioContainer.appendChild(document.createElement('div'));
             }
 
-            modalModificaIntervento.style.display = 'block';
+            for (let i = 1; i <= ultimoGiornoMese.getDate(); i++) {
+                const giorno = document.createElement('div');
+                giorno.className = 'giorno-calendario';
+                giorno.textContent = i;
+
+                const dataGiorno = new Date(meseCorrente.getFullYear(), meseCorrente.getMonth(), i);
+                const appuntamentiGiorno = getAppuntamentiGiorno(dataGiorno);
+                
+                if (appuntamentiGiorno.length > 0) {
+                    appuntamentiGiorno.forEach(appuntamento => {
+                        const eventoElement = document.createElement('div');
+                        eventoElement.className = 'evento-calendario';
+                        eventoElement.textContent = `${appuntamento.nome} ${appuntamento.cognome}: ${appuntamento.tipoIntervento}`;
+                        giorno.appendChild(eventoElement);
+                    });
+                }
+
+                calendarioContainer.appendChild(giorno);
+            }
         }
 
-        formModificaIntervento.addEventListener('submit', (e) => {
+        function getAppuntamentiGiorno(data) {
+            return Array.from(tabellaInterventiInCorso.rows).filter(row => {
+                const [giorno, mese, anno] = row.cells[5].textContent.split(' ')[0].split('.');
+                const dataAppuntamento = new Date(anno, mese - 1, giorno);
+                return dataAppuntamento.toDateString() === data.toDateString();
+            }).map(row => ({
+                nome: row.cells[0].textContent,
+                cognome: row.cells[1].textContent,
+                tipoIntervento: row.cells[4].textContent
+            }));
+        }
+
+        function aggiornaProssimiEventi() {
+            prossimiEventi.innerHTML = '';
+            const oggi = new Date();
+            const tra30Giorni = new Date(oggi.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+            const appuntamenti = Array.from(tabellaInterventiInCorso.rows)
+                .map(row => {
+                    const [giorno, mese, anno] = row.cells[5].textContent.split(' ')[0].split('.');
+                    const ora = row.cells[5].textContent.split(' ')[1];
+                    return {
+                        nome: row.cells[0].textContent,
+                        cognome: row.cells[1].textContent,
+                        tipoIntervento: row.cells[4].textContent,
+                        data: new Date(anno, mese - 1, giorno),
+                        ora: ora
+                    };
+                })
+                .filter(a => a.data >= oggi && a.data <= tra30Giorni)
+                .sort((a, b) => a.data - b.data);
+
+            appuntamenti.forEach(a => {
+                const li = document.createElement('li');
+                li.textContent = `${formatDataItaliana(a.data)} ${a.ora} - ${a.nome} ${a.cognome}: ${a.tipoIntervento}`;
+                prossimiEventi.appendChild(li);
+            });
+        }
+
+        mesePrecedente.addEventListener('click', () => {
+            meseCorrente.setMonth(meseCorrente.getMonth() - 1);
+            generaCalendario();
+        });
+
+        meseSuccessivo.addEventListener('click', () => {
+            meseCorrente.setMonth(meseCorrente.getMonth() + 1);
+            generaCalendario();
+        });
+
+        // Funzioni per aggiornare le liste
+        function aggiornaListaClientiDaPianificare() {
+            // I dati sono già caricati in caricaDati()
+        }
+
+        function aggiornaInterventiInCorso() {
+            // I dati sono già caricati in caricaDati()
+        }
+
+        function aggiornaInterventiCompletati() {
+            // I dati sono già caricati in caricaDati()
+        }
+
+        function aggiornaRubrica() {
+            // I dati sono già caricati in caricaDati()
+        }
+
+        // Gestione del login
+        const loginPage = document.getElementById('loginPage');
+        const loginForm = document.getElementById('loginForm');
+        const mainContent = document.querySelector('.main-content');
+        const sidebar = document.querySelector('.sidebar');
+
+        // Funzione per nascondere tutti gli elementi principali
+        function nascondiElementiPrincipali() {
+            mainContent.classList.add('hidden');
+            sidebar.classList.add('hidden');
+        }
+
+        // Funzione per mostrare tutti gli elementi principali
+        function mostraElementiPrincipali() {
+            mainContent.classList.remove('hidden');
+            sidebar.classList.remove('hidden');
+        }
+
+        // Nascondi gli elementi principali all'avvio
+        nascondiElementiPrincipali();
+
+        loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const newData = {
-                nome: document.getElementById('modNome').value,
-                cognome: document.getElementById('modCognome').value,
-                indirizzo: document.getElementById('modIndirizzo').value,
-                telefono: document.getElementById('modTelefono').value,
-                tipoIntervento: document.getElementById('modTipoIntervento').value,
-                appuntamento: document.getElementById('modAppuntamento').value
-            };
+            const password = document.getElementById('password').value;
 
-            clienteSelezionato.querySelector('[data-label="Nome"]').textContent = newData.nome;
-            clienteSelezionato.querySelector('[data-label="Cognome"]').textContent = newData.cognome;
-            clienteSelezionato.querySelector('[data-label="Indirizzo"]').textContent = newData.indirizzo;
-            clienteSelezionato.querySelector('[data-label="Telefono"]').textContent = newData.telefono;
-            clienteSelezionato.querySelector('[data-label="Tipo Intervento"]').textContent = newData.tipoIntervento;
-            const appuntamentoEl = clienteSelezionato.querySelector('[data-label="Appuntamento"]');
-            if (appuntamentoEl) {
-                appuntamentoEl.textContent = newData.appuntamento;
+            // Qui dovresti implementare una vera autenticazione.
+            // Per questo esempio, usiamo una password hardcoded.
+            if (password === 'password') {
+                document.getElementById('loginPage').style.display = 'none';
+                mostraElementiPrincipali();
+                showToast('Accesso effettuato con successo!');
+                caricaDati(); // Carica i dati dopo il login
+                btnNuovoCliente.click(); // Apre la scheda "Nuovo cliente" di default
+            } else {
+                showToast('Password non valida. Riprova.');
             }
-
-            modalModificaIntervento.style.display = 'none';
-            salvaDati();
-            showToast("Intervento modificato con successo!");
         });
 
-        annullaModificaIntervento.addEventListener('click', () => {
-            modalModificaIntervento.style.display = 'none';
-        });
-
-        // Funzione per il menu a hamburger su mobile
-        function toggleMenu() {
-            const navButtons = document.querySelector('.nav-buttons');
-            navButtons.classList.toggle('show');
-        }
-
-        // Inizializzazione dell'applicazione
-        document.addEventListener('DOMContentLoaded', () => {
-            caricaDati();
-            btnNuovoCliente.click(); // Apre la scheda "Nuovo cliente" di default
-        });
-
-// Gestione del ridimensionamento della finestra
+        // Gestione del ridimensionamento della finestra
         window.addEventListener('resize', inizializzaAreaFirma);
 
         // Chiusura delle modali cliccando al di fuori
@@ -1033,63 +1252,111 @@ function pianificaAppuntamento(button) {
             if (event.target == modalFirma) {
                 modalFirma.style.display = 'none';
             }
-            if (event.target == modalModificaContatto) {
-                modalModificaContatto.style.display = 'none';
+        }
+
+        // Funzioni per la modifica degli interventi e dei contatti
+        function modificaIntervento(button) {
+            const row = button.closest('tr');
+            const cells = row.cells;
+
+            // Sostituisci il contenuto delle celle con input
+            for (let i = 0; i < cells.length - 1; i++) {
+                const cellContent = cells[i].textContent;
+                cells[i].innerHTML = `<input type="text" value="${cellContent}">`;
             }
-            if (event.target == modalModificaIntervento) {
-                modalModificaIntervento.style.display = 'none';
+
+            // Cambia i pulsanti
+            const azioniCell = cells[cells.length - 1];
+            azioniCell.innerHTML = `
+                <button onclick="salvaModificheIntervento(this)" class="btn-modifica"><i class="fas fa-save"></i></button>
+                <button onclick="annullaModificheIntervento(this)" class="btn-elimina"><i class="fas fa-times"></i></button>
+            `;
+        }
+
+        function salvaModificheIntervento(button) {
+            const row = button.closest('tr');
+            const cells = row.cells;
+
+            // Salva i nuovi valori
+            for (let i = 0; i < cells.length - 1; i++) {
+                const input = cells[i].querySelector('input');
+                cells[i].textContent = input.value;
+            }
+
+            // Ripristina i pulsanti originali
+            ripristinaPulsantiOriginali(row, 'daPianificare');
+
+            salvaDati();
+            showToast('Modifiche salvate con successo');
+        }
+
+        function annullaModificheIntervento(button) {
+            const row = button.closest('tr');
+            ripristinaPulsantiOriginali(row, 'daPianificare');
+        }
+
+        function modificaContatto(button) {
+            const row = button.closest('tr');
+            const cells = row.cells;
+
+            // Sostituisci il contenuto delle celle con input
+            for (let i = 0; i < cells.length - 1; i++) {
+                const cellContent = cells[i].textContent;
+                cells[i].innerHTML = `<input type="text" value="${cellContent}">`;
+            }
+
+            // Cambia i pulsanti
+            const azioniCell = cells[cells.length - 1];
+            azioniCell.innerHTML = `
+                <button onclick="salvaModificheContatto(this)" class="btn-modifica"><i class="fas fa-save"></i></button>
+                <button onclick="annullaModificheContatto(this)" class="btn-elimina"><i class="fas fa-times"></i></button>
+            `;
+        }
+
+        function salvaModificheContatto(button) {
+            const row = button.closest('tr');
+            const cells = row.cells;
+
+            // Salva i nuovi valori
+            for (let i = 0; i < cells.length - 1; i++) {
+                const input = cells[i].querySelector('input');
+                cells[i].textContent = input.value;
+            }
+
+            // Ripristina i pulsanti originali
+            ripristinaPulsantiOriginali(row, 'rubrica');
+
+            salvaDati();
+            showToast('Modifiche al contatto salvate con successo');
+        }
+
+        function annullaModificheContatto(button) {
+            const row = button.closest('tr');
+            ripristinaPulsantiOriginali(row, 'rubrica');
+        }
+
+        function ripristinaPulsantiOriginali(row, tipo) {
+            const azioniCell = row.cells[row.cells.length - 1];
+            if (tipo === 'daPianificare') {
+                azioniCell.innerHTML = `
+                    <button onclick="modificaIntervento(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
+                    <button onclick="pianificaAppuntamento(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i></button>
+                    <button onclick="eliminaIntervento(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
+                `;
+            } else if (tipo === 'rubrica') {
+                azioniCell.innerHTML = `
+                    <button onclick="modificaContatto(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
+                    <button onclick="pianificaInterventoRubrica(this)" class="btn-pianifica"><i class="fas fa-calendar-plus"></i></button>
+                    <button onclick="eliminaContattoRubrica(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
+                `;
             }
         }
 
-        // Funzione per controllare se il dispositivo è mobile
-        function isMobileDevice() {
-            return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
-        }
-
-        // Modifica la funzione visualizzaPDF per gestire dispositivi mobili
-        function visualizzaPDF(button) {
-            const card = button.closest('.intervento-card');
-            const intervento = {
-                nome: card.querySelector('[data-label="Nome"]').textContent,
-                cognome: card.querySelector('[data-label="Cognome"]').textContent,
-                indirizzo: card.querySelector('[data-label="Indirizzo"]').textContent,
-                telefono: card.querySelector('[data-label="Telefono"]').textContent,
-                tipoIntervento: card.querySelector('[data-label="Tipo Intervento"]').textContent,
-                appuntamento: card.querySelector('[data-label="Appuntamento"]').textContent
-            };
-
-            const doc = new jsPDF();
-            doc.setFontSize(18);
-            doc.text('Rapporto Intervento', 105, 20, null, null, 'center');
-            doc.setFontSize(12);
-            doc.text(`Nome: ${intervento.nome}`, 20, 40);
-            doc.text(`Cognome: ${intervento.cognome}`, 20, 50);
-            doc.text(`Indirizzo: ${intervento.indirizzo}`, 20, 60);
-            doc.text(`Telefono: ${intervento.telefono}`, 20, 70);
-            doc.text(`Tipo Intervento: ${intervento.tipoIntervento}`, 20, 80);
-            doc.text(`Data e Ora Appuntamento: ${intervento.appuntamento}`, 20, 90);
-
-            const confermaText = `Il sottoscritto cliente conferma che in data ${formatDataItaliana(new Date())}, l'intervento richiesto è stato eseguito con successo e in maniera ottimale.`;
-            const splitText = doc.splitTextToSize(confermaText, 170);
-            doc.text(splitText, 20, 110);
-
-            doc.addImage(areaFirma.toDataURL(), 'PNG', 20, 130, 50, 25);
-            doc.text(`Data e ora firma: ${formatDataItaliana(new Date())} ${formatOraItaliana(new Date())}`, 20, 160);
-
-            if (isMobileDevice()) {
-                // Su dispositivi mobili, salva il PDF e apri con un'app esterna
-                const pdfBlob = doc.output('blob');
-                const pdfUrl = URL.createObjectURL(pdfBlob);
-                const link = document.createElement('a');
-                link.href = pdfUrl;
-                link.download = `Rapporto_${intervento.nome}_${intervento.cognome}.pdf`;
-                link.click();
-                URL.revokeObjectURL(pdfUrl);
-            } else {
-                // Su desktop, apri il PDF in una nuova scheda
-                window.open(doc.output('bloburl'), '_blank');
-            }
-        }
+        // Inizializzazione dell'applicazione
+        document.addEventListener('DOMContentLoaded', () => {
+            nascondiElementiPrincipali();
+            // Altre inizializzazioni se necessarie
+        });
     </script>
 </body>
 </html>

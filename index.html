@@ -243,8 +243,16 @@
             margin-left: 5px;
         }
 
+        .azioni-intervento {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 5px;
+        }
+
         .azioni-intervento button {
-            margin-right: 5px;
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
         }
 
         .btn-modifica { background-color: #3498db; }
@@ -269,12 +277,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 300px;
-        }
-
-        #loginLogo {
-            width: 150px;
-            height: 150px;
-            margin-bottom: 20px;
         }
 
         @media screen and (max-width: 768px) {
@@ -318,11 +320,6 @@
                 padding: 8px;
             }
 
-            .azioni-intervento button {
-                padding: 8px;
-                margin-right: 2px;
-            }
-
             .modal-content {
                 width: 90%;
                 max-width: none;
@@ -360,16 +357,19 @@
                 border: none;
                 position: relative;
                 padding-left: 50%;
+                text-align: right;
+                display: block;
             }
 
             td:before {
-                position: absolute;
-                left: 6px;
-                width: 45%;
-                padding-right: 10px;
-                white-space: nowrap;
                 content: attr(data-label);
+                float: left;
                 font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            td:last-child {
+                border-bottom: 0;
             }
         }
     </style>
@@ -377,7 +377,7 @@
 <body>
     <div id="loginPage">
         <form id="loginForm">
-            <img src="https://github.com/RBcomputer/Logo/blob/main/logo.png?raw=true" alt="Logo" id="loginLogo">
+            <i class="fas fa-hard-hat fa-5x" style="color: #3498db; margin-bottom: 20px;"></i>
             <input type="password" id="password" placeholder="Password" required>
             <button type="submit">Accedi</button>
         </form>
@@ -482,8 +482,8 @@
         <div id="modalAppuntamento" class="modal">
             <div class="modal-content">
                 <h2>Pianifica Appuntamento</h2>
-                <form id="formAppuntamento">
-<input type="date" id="dataAppuntamento" required>
+<form id="formAppuntamento">
+                    <input type="date" id="dataAppuntamento" required>
                     <input type="time" id="oraAppuntamento" required>
                     <button type="submit">Conferma Appuntamento</button>
                 </form>
@@ -724,12 +724,12 @@
         function aggiungiRigaTabella(tabella, intervento, tipo) {
             const newRow = tabella.insertRow();
             newRow.innerHTML = `
-                <td data-label="Nome"><strong>Nome:</strong> ${intervento.nome}</td>
-                <td data-label="Cognome"><strong>Cognome:</strong> ${intervento.cognome}</td>
-                <td data-label="Indirizzo"><strong>Indirizzo:</strong> ${intervento.indirizzo}</td>
-                <td data-label="Telefono"><strong>Telefono:</strong> ${intervento.telefono}</td>
-                <td data-label="Tipo Intervento"><strong>Tipo Intervento:</strong> ${intervento.tipoIntervento}</td>
-                ${tipo !== 'daPianificare' ? `<td data-label="Appuntamento"><strong>Appuntamento:</strong> ${intervento.appuntamento || ''}</td>` : ''}
+                <td data-label="Nome">${intervento.nome}</td>
+                <td data-label="Cognome">${intervento.cognome}</td>
+                <td data-label="Indirizzo">${intervento.indirizzo}</td>
+                <td data-label="Telefono">${intervento.telefono}</td>
+                <td data-label="Tipo Intervento">${intervento.tipoIntervento}</td>
+                ${tipo !== 'daPianificare' ? `<td data-label="Appuntamento">${intervento.appuntamento || ''}</td>` : ''}
                 <td data-label="Azioni">
                     <div class="azioni-intervento">
                         <button onclick="apriModalModificaIntervento(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
@@ -745,13 +745,15 @@
         function aggiungiRigaRubrica(contatto) {
             const newRow = tabellaRubrica.insertRow();
             newRow.innerHTML = `
-                <td data-label="Nome"><strong>Nome:</strong> ${contatto.nome}</td>
-                <td data-label="Cognome"><strong>Cognome:</strong> ${contatto.cognome}</td>
-                <td data-label="Indirizzo"><strong>Indirizzo:</strong> ${contatto.indirizzo}</td>
-                <td data-label="Telefono"><strong>Telefono:</strong> ${contatto.telefono}</td>
+                <td data-label="Nome">${contatto.nome}</td>
+                <td data-label="Cognome">${contatto.cognome}</td>
+                <td data-label="Indirizzo">${contatto.indirizzo}</td>
+                <td data-label="Telefono">${contatto.telefono}</td>
                 <td data-label="Azioni">
-                    <button onclick="apriModalModificaContatto(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
-                    <button onclick="eliminaContatto(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
+                    <div class="azioni-intervento">
+                        <button onclick="apriModalModificaContatto(this)" class="btn-modifica"><i class="fas fa-pencil-alt"></i></button>
+                        <button onclick="eliminaContatto(this)" class="btn-elimina"><i class="fas fa-trash-alt"></i></button>
+                    </div>
                 </td>
             `;
         }
@@ -762,12 +764,11 @@
             const nuovoCliente = {
                 nome: document.getElementById('nome').value,
                 cognome: document.getElementById('cognome').value,
-				indirizzo: document.getElementById('indirizzo').value,
+                indirizzo: document.getElementById('indirizzo').value,
                 telefono: document.getElementById('telefono').value,
                 tipoIntervento: document.getElementById('tipoIntervento').value
             };
-
-            aggiungiRigaTabella(tabellaClienti, nuovoCliente, 'daPianificare');
+			aggiungiRigaTabella(tabellaClienti, nuovoCliente, 'daPianificare');
             aggiungiRigaRubrica(nuovoCliente);
             interventoForm.reset();
             salvaDati();
@@ -933,10 +934,10 @@
             contattoSelezionato = button.closest('tr');
             const cells = contattoSelezionato.cells;
 
-            document.getElementById('modNome').value = cells[0].textContent.replace('Nome: ', '');
-            document.getElementById('modCognome').value = cells[1].textContent.replace('Cognome: ', '');
-            document.getElementById('modIndirizzo').value = cells[2].textContent.replace('Indirizzo: ', '');
-            document.getElementById('modTelefono').value = cells[3].textContent.replace('Telefono: ', '');
+            document.getElementById('modNome').value = cells[0].textContent;
+            document.getElementById('modCognome').value = cells[1].textContent;
+            document.getElementById('modIndirizzo').value = cells[2].textContent;
+            document.getElementById('modTelefono').value = cells[3].textContent;
 
             modalModificaContatto.style.display = 'block';
         }
@@ -951,16 +952,16 @@
             };
 
             const oldData = {
-                nome: contattoSelezionato.cells[0].textContent.replace('Nome: ', ''),
-                cognome: contattoSelezionato.cells[1].textContent.replace('Cognome: ', ''),
-                indirizzo: contattoSelezionato.cells[2].textContent.replace('Indirizzo: ', ''),
-                telefono: contattoSelezionato.cells[3].textContent.replace('Telefono: ', '')
+                nome: contattoSelezionato.cells[0].textContent,
+                cognome: contattoSelezionato.cells[1].textContent,
+                indirizzo: contattoSelezionato.cells[2].textContent,
+                telefono: contattoSelezionato.cells[3].textContent
             };
 
-            contattoSelezionato.cells[0].innerHTML = `<strong>Nome:</strong> ${newData.nome}`;
-            contattoSelezionato.cells[1].innerHTML = `<strong>Cognome:</strong> ${newData.cognome}`;
-            contattoSelezionato.cells[2].innerHTML = `<strong>Indirizzo:</strong> ${newData.indirizzo}`;
-            contattoSelezionato.cells[3].innerHTML = `<strong>Telefono:</strong> ${newData.telefono}`;
+            contattoSelezionato.cells[0].textContent = newData.nome;
+            contattoSelezionato.cells[1].textContent = newData.cognome;
+            contattoSelezionato.cells[2].textContent = newData.indirizzo;
+            contattoSelezionato.cells[3].textContent = newData.telefono;
 
             // Aggiorna anche gli interventi correlati
             aggiornaInterventiCorrelati(oldData, newData);
@@ -977,8 +978,8 @@
         function eliminaContatto(button) {
             if (confirm('Sei sicuro di voler eliminare questo contatto?')) {
                 const row = button.closest('tr');
-                const nome = row.cells[0].textContent.replace('Nome: ', '');
-                const cognome = row.cells[1].textContent.replace('Cognome: ', '');
+                const nome = row.cells[0].textContent;
+                const cognome = row.cells[1].textContent;
 
                 // Rimuovi gli interventi correlati
                 rimuoviInterventiCorrelati(nome, cognome);
@@ -993,11 +994,11 @@
             const tabelle = [tabellaClienti, tabellaInterventiInCorso, tabellaInterventiCompletati];
             tabelle.forEach(tabella => {
                 Array.from(tabella.rows).forEach(row => {
-                    if (row.cells[0].textContent.includes(oldData.nome) && row.cells[1].textContent.includes(oldData.cognome)) {
-                        row.cells[0].innerHTML = `<strong>Nome:</strong> ${newData.nome}`;
-                        row.cells[1].innerHTML = `<strong>Cognome:</strong> ${newData.cognome}`;
-                        row.cells[2].innerHTML = `<strong>Indirizzo:</strong> ${newData.indirizzo}`;
-                        row.cells[3].innerHTML = `<strong>Telefono:</strong> ${newData.telefono}`;
+                    if (row.cells[0].textContent === oldData.nome && row.cells[1].textContent === oldData.cognome) {
+                        row.cells[0].textContent = newData.nome;
+                        row.cells[1].textContent = newData.cognome;
+                        row.cells[2].textContent = newData.indirizzo;
+                        row.cells[3].textContent = newData.telefono;
                     }
                 });
             });
@@ -1007,7 +1008,7 @@
             const tabelle = [tabellaClienti, tabellaInterventiInCorso, tabellaInterventiCompletati];
             tabelle.forEach(tabella => {
                 Array.from(tabella.rows).forEach(row => {
-                    if (row.cells[0].textContent.includes(nome) && row.cells[1].textContent.includes(cognome)) {
+                    if (row.cells[0].textContent === nome && row.cells[1].textContent === cognome) {
                         row.remove();
                     }
                 });
@@ -1019,13 +1020,13 @@
             clienteSelezionato = button.closest('tr');
             const cells = clienteSelezionato.cells;
 
-            document.getElementById('modNome').value = cells[0].textContent.replace('Nome: ', '');
-            document.getElementById('modCognome').value = cells[1].textContent.replace('Cognome: ', '');
-            document.getElementById('modIndirizzo').value = cells[2].textContent.replace('Indirizzo: ', '');
-            document.getElementById('modTelefono').value = cells[3].textContent.replace('Telefono: ', '');
-            document.getElementById('modTipoIntervento').value = cells[4].textContent.replace('Tipo Intervento: ', '');
+            document.getElementById('modNome').value = cells[0].textContent;
+            document.getElementById('modCognome').value = cells[1].textContent;
+            document.getElementById('modIndirizzo').value = cells[2].textContent;
+            document.getElementById('modTelefono').value = cells[3].textContent;
+            document.getElementById('modTipoIntervento').value = cells[4].textContent;
             if (cells.length > 5) {
-                document.getElementById('modAppuntamento').value = cells[5].textContent.replace('Appuntamento: ', '');
+                document.getElementById('modAppuntamento').value = cells[5].textContent;
             }
 
             modalModificaIntervento.style.display = 'block';
@@ -1043,13 +1044,13 @@
             };
 
             const cells = clienteSelezionato.cells;
-            cells[0].innerHTML = `<strong>Nome:</strong> ${newData.nome}`;
-            cells[1].innerHTML = `<strong>Cognome:</strong> ${newData.cognome}`;
-            cells[2].innerHTML = `<strong>Indirizzo:</strong> ${newData.indirizzo}`;
-            cells[3].innerHTML = `<strong>Telefono:</strong> ${newData.telefono}`;
-            cells[4].innerHTML = `<strong>Tipo Intervento:</strong> ${newData.tipoIntervento}`;
+            cells[0].textContent = newData.nome;
+            cells[1].textContent = newData.cognome;
+            cells[2].textContent = newData.indirizzo;
+            cells[3].textContent = newData.telefono;
+            cells[4].textContent = newData.tipoIntervento;
             if (cells.length > 5) {
-                cells[5].innerHTML = `<strong>Appuntamento:</strong> ${newData.appuntamento}`;
+                cells[5].textContent = newData.appuntamento;
             }
 
             modalModificaIntervento.style.display = 'none';
@@ -1067,7 +1068,7 @@
             navButtons.classList.toggle('show');
         }
 
-// Inizializzazione dell'applicazione
+        // Inizializzazione dell'applicazione
         document.addEventListener('DOMContentLoaded', () => {
             caricaDati();
             btnNuovoCliente.click(); // Apre la scheda "Nuovo cliente" di default
